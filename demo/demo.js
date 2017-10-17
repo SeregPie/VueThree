@@ -8,17 +8,25 @@
 		},
 
 		computed: {
+			threeSphereHelper() {
+				return {
+					component: 'mySphereHelper',
+					props: {
+						color: '#a0a0a0'
+					},
+				};
+			},
+
 			threePoints() {
 				let returns = {};
 				for (let i = 0; i < 100; ++i) {
 					returns[Math.random()] = {
 						component: 'myPoint',
 						props: {
-							color: '#ffff00',
+							color: '#a0a0a0',
 							position: (new THREE.Vector3(Math.random(), Math.random(), Math.random()))
 								.subScalar(1/2)
-								.setLength(1 + Math.random())
-								.multiplyScalar(2),
+								.setLength(Math.random()),
 							scale: 1/100,
 						},
 					};
@@ -27,16 +35,64 @@
 			},
 
 			threeObjects() {
+
 				let returns = {};
-				for (let [key, value] of Object.entries(this.threePoints)) {
-					key = `threePoint.${key}`;
-					returns[key] = value;
+				{
+					let object = this.threeSphereHelper;
+					if (object) {
+						returns['threeSphereHelper'] = object;
+					}
+				}
+				for (let [key, object] of Object.entries(this.threePoints)) {
+					returns[`threePoint.${key}`] = object;
 				}
 				return returns;
 			},
 		},
 
 		components: {
+			mySphereHelper: {
+				mixins: [VueTHREE.Object3D],
+				render: VueTHREE.Object3D.render,
+
+				props: {
+					color: {},
+				},
+
+				THREE: {
+					object() {
+						return new THREE.Mesh(
+							new THREE.IcosahedronGeometry(1, 3),
+							new THREE.MeshBasicMaterial({
+								opacity: 1/8,
+								transparent: true,
+								vertexColors: THREE.VertexColors,
+								wireframe: true,
+							}),
+						);
+					},
+				},
+
+				beforeCreate() {
+					Object.entries({
+						updateColor() {
+							this.object.material.color.set(this.color);
+						},
+					}).forEach(([key, fn]) => {
+						this.$options.computed[key] = fn;
+						this.$options.watch[key] = function() {};
+					});
+				},
+
+				beforeDestroy() {
+					this.object.geometry.dispose();
+					this.object.material.dispose();
+				},
+
+				computed: {},
+				watch: {},
+			},
+
 			myPoint: {
 				mixins: [VueTHREE.Object3D],
 				render: VueTHREE.Object3D.render,

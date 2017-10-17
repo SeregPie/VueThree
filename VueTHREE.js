@@ -439,7 +439,7 @@ var OrbitControls = {
 		},
 		dampingFactor: {
 			type: Number,
-			default: 0.25,
+			default: 1/4,
 		},
 		enableZoom: {
 			type: Boolean,
@@ -447,7 +447,7 @@ var OrbitControls = {
 		},
 		zoomSpeed: {
 			type: Number,
-			default: 1.0,
+			default: 1,
 		},
 		enableRotate: {
 			type: Boolean,
@@ -455,7 +455,7 @@ var OrbitControls = {
 		},
 		rotateSpeed: {
 			type: Number,
-			default: 1.0,
+			default: 1,
 		},
 		enablePan: {
 			type: Boolean,
@@ -463,7 +463,7 @@ var OrbitControls = {
 		},
 		keyPanSpeed: {
 			type: Number,
-			default: 7.0,
+			default: 7,
 		},
 		autoRotate: {
 			type: Boolean,
@@ -471,7 +471,7 @@ var OrbitControls = {
 		},
 		autoRotateSpeed: {
 			type: Number,
-			default: 2.0,
+			default: 2,
 		},
 		enableKeys: {
 			type: Boolean,
@@ -556,15 +556,15 @@ var OrbitControls = {
 			},
 
 			updateEnablePan() {
-				this.controls.keyPanSpeed = this.keyPanSpeed;
+				this.controls.enablePan = this.enablePan;
 			},
 
 			updateKeyPanSpeed() {
-				this.controls.autoRotate = this.autoRotate;
+				this.controls.keyPanSpeed = this.keyPanSpeed;
 			},
 
 			updateAutoRotate() {
-				this.controls.autoRotateSpeed = this.autoRotateSpeed;
+				this.controls.autoRotate = this.autoRotate;
 			},
 
 			updateAutoRotateSpeed() {
@@ -611,7 +611,7 @@ var OrbitControls = {
 
 	methods: {
 		updateControls() {
-			//this.controls.update();
+			this.controls.update();
 		},
 	},
 };

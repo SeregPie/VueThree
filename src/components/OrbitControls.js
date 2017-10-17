@@ -55,7 +55,7 @@ export default {
 		},
 		dampingFactor: {
 			type: Number,
-			default: 0.25,
+			default: 1/4,
 		},
 		enableZoom: {
 			type: Boolean,
@@ -63,7 +63,7 @@ export default {
 		},
 		zoomSpeed: {
 			type: Number,
-			default: 1.0,
+			default: 1,
 		},
 		enableRotate: {
 			type: Boolean,
@@ -71,7 +71,7 @@ export default {
 		},
 		rotateSpeed: {
 			type: Number,
-			default: 1.0,
+			default: 1,
 		},
 		enablePan: {
 			type: Boolean,
@@ -79,7 +79,7 @@ export default {
 		},
 		keyPanSpeed: {
 			type: Number,
-			default: 7.0,
+			default: 7,
 		},
 		autoRotate: {
 			type: Boolean,
@@ -87,7 +87,7 @@ export default {
 		},
 		autoRotateSpeed: {
 			type: Number,
-			default: 2.0,
+			default: 2,
 		},
 		enableKeys: {
 			type: Boolean,
@@ -172,15 +172,15 @@ export default {
 			},
 
 			updateEnablePan() {
-				this.controls.keyPanSpeed = this.keyPanSpeed;
+				this.controls.enablePan = this.enablePan;
 			},
 
 			updateKeyPanSpeed() {
-				this.controls.autoRotate = this.autoRotate;
+				this.controls.keyPanSpeed = this.keyPanSpeed;
 			},
 
 			updateAutoRotate() {
-				this.controls.autoRotateSpeed = this.autoRotateSpeed;
+				this.controls.autoRotate = this.autoRotate;
 			},
 
 			updateAutoRotateSpeed() {
@@ -227,7 +227,7 @@ export default {
 
 	methods: {
 		updateControls() {
-			//this.controls.update();
+			this.controls.update();
 		},
 	},
 };
