@@ -37,9 +37,11 @@ Include the code in your page via a CDN.
 <vue-three-renderer clear-color="#00ff00">
 	<vue-three-scene>
 		<vue-three-fog color="#ff0000"></vue-three-fog>
-		<vue-three-perspective-camera :fov="60">
-			<vue-three-orbit-controls auto-rotate></vue-three-orbit-controls>
-		</vue-three-perspective-camera>
+		<vue-three-perspective-camera
+			:fov="60"
+			:position="cameraPosition"
+			:quaternion="cameraQuaternion"
+		></vue-three-perspective-camera>
 		<component
 			v-for="threeObject in threeObjects"
 			:key="threeObject.key"
@@ -48,6 +50,11 @@ Include the code in your page via a CDN.
 		></component>
 		<vue-three-point-light :decay="2" :position="[50, 0, 0]"></vue-three-point-light>
 	</vue-three-scene>
+	<vue-three-orbit-controls
+		:position.sync="cameraPosition"
+		:quaternion.sync="cameraQuaternion"
+		auto-rotate
+	></vue-three-orbit-controls>
 </vue-three-renderer>
 
 ```

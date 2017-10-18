@@ -15,8 +15,11 @@ var Renderer = {
 	render(createElement) {
 		return createElement('div', {
 			style: {
-				width: '100%',
-				height: '100%',
+				position: 'absolute',
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0,
 				overflow: 'hidden',
 			},
 		}, this.$slots.default);
@@ -48,7 +51,7 @@ var Renderer = {
 			frozen$renderer: Object.freeze({
 				o: new THREE.WebGLRenderer({
 					alpha: this.alpha,
-					antialias: this.alpha,
+					antialias: this.antialias,
 				}),
 			}),
 			frozen$scene: {o: null},
@@ -162,6 +165,12 @@ var Object3D = {
 				return [0, 0, 0];
 			},
 		},
+		quaternion: {
+			type: [Object, Array],
+			default() {
+				return [0, 0, 0, 1];
+			},
+		},
 		scale: {
 			type: [Object, Array, Number],
 			default: 1,
@@ -176,8 +185,6 @@ var Object3D = {
 
 	data() {
 		return {
-			containerWidth: 0,
-			containerHeight: 0,
 			frozen$object: Object.freeze({
 				o: this.$options.THREE.object.call(this),
 			}),
@@ -191,6 +198,14 @@ var Object3D = {
 					this.object.position.fromArray(this.position);
 				} else {
 					Object.assign(this.object.position, this.position);
+				}
+			},
+
+			updateQuaternion() {
+				if (Array.isArray(this.quaternion)) {
+					this.object.quaternion.fromArray(this.quaternion);
+				} else {
+					Object.assign(this.object.quaternion, this.quaternion);
 				}
 			},
 
@@ -240,8 +255,6 @@ var Scene = {
 
 	data() {
 		return {
-			containerWidth: 0,
-			containerHeight: 0,
 			frozen$object: Object.freeze({
 				o: new THREE.Scene(),
 			}),
@@ -287,8 +300,6 @@ var Fog = {
 
 	data() {
 		return {
-			containerWidth: 0,
-			containerHeight: 0,
 			frozen$fog: Object.freeze({
 				o: new THREE.Fog(),
 			}),
@@ -390,10 +401,31 @@ var OrbitControls = {
 	name: 'VueThreeOrbitControls',
 
 	render(createElement) {
-		return createElement('div');
+		return createElement('div', {
+			style: {
+				position: 'absolute',
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0,
+				overflow: 'hidden',
+			},
+		});
 	},
 
 	props: {
+		position: {
+			type: [Object, Array],
+			default() {
+				return [0, 0, 0];
+			},
+		},
+		quaternion: {
+			type: [Object, Array],
+			default() {
+				return [0, 0, 0, 1];
+			},
+		},
 		enabled: {
 			type: Boolean,
 			default: true,
@@ -484,11 +516,26 @@ var OrbitControls = {
 	},
 
 	data() {
-		let object = this.$parent.object;
-		let renderer =  this.$parent.renderer;
+		let object = new THREE.PerspectiveCamera();
+		console.log(this.$el);
+		{
+			if (Array.isArray(this.position)) {
+				object.position.fromArray(this.position);
+			} else {
+				Object.assign(object.position, this.position);
+			}
+		}
+
+		{
+			if (Array.isArray(this.quaternion)) {
+				object.quaternion.fromArray(this.quaternion);
+			} else {
+				Object.assign(object.quaternion, this.quaternion);
+			}
+		}
 		return {
 			frozen$controls: Object.freeze({
-				o: new THREE.OrbitControls(object, renderer.domElement),
+				o: new THREE.OrbitControls(object),
 			}),
 		};
 	},
@@ -612,6 +659,8 @@ var OrbitControls = {
 	methods: {
 		updateControls() {
 			this.controls.update();
+			this.$emit('update:position', this.controls.object.position.toArray());
+			this.$emit('update:quaternion', this.controls.object.quaternion.toArray());
 		},
 	},
 };

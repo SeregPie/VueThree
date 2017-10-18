@@ -26,8 +26,6 @@ export default {
 
 	data() {
 		return {
-			containerWidth: 0,
-			containerHeight: 0,
 			frozen$fog: Object.freeze({
 				o: new THREE.Fog(),
 			}),

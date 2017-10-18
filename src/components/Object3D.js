@@ -16,6 +16,12 @@ export default {
 				return [0, 0, 0];
 			},
 		},
+		quaternion: {
+			type: [Object, Array],
+			default() {
+				return [0, 0, 0, 1];
+			},
+		},
 		scale: {
 			type: [Object, Array, Number],
 			default: 1,
@@ -30,8 +36,6 @@ export default {
 
 	data() {
 		return {
-			containerWidth: 0,
-			containerHeight: 0,
 			frozen$object: Object.freeze({
 				o: this.$options.THREE.object.call(this),
 			}),
@@ -45,6 +49,14 @@ export default {
 					this.object.position.fromArray(this.position);
 				} else {
 					Object.assign(this.object.position, this.position);
+				}
+			},
+
+			updateQuaternion() {
+				if (Array.isArray(this.quaternion)) {
+					this.object.quaternion.fromArray(this.quaternion);
+				} else {
+					Object.assign(this.object.quaternion, this.quaternion);
 				}
 			},
 

@@ -8,8 +8,11 @@ export default {
 	render(createElement) {
 		return createElement('div', {
 			style: {
-				width: '100%',
-				height: '100%',
+				position: 'absolute',
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0,
 				overflow: 'hidden',
 			},
 		}, this.$slots.default);

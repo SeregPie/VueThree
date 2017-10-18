@@ -4,7 +4,9 @@
 		el: '#demo',
 
 		data: {
-
+			lightPosition: [1, 1, 1],
+			cameraPosition: [0, 0, 4/2],
+			cameraQuaternion: [0, 0, 0, 1],
 		},
 
 		computed: {
@@ -47,6 +49,12 @@
 					returns[`threePoint.${key}`] = object;
 				}
 				return returns;
+			},
+		},
+
+		methods: {
+			test() {
+				this.lightPosition = [Math.random(), Math.random(), Math.random()];
 			},
 		},
 

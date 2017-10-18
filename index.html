@@ -10,8 +10,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 	</head>
-	<body style="height: 100%; background-color: #1a3041;">
+	<body style="position: relative; height: 100%; background-color: #1a3041;">
 		<vue-three-renderer antialias alpha id="demo">
+			<div @click="test">TEST</div>
 			<vue-three-scene>
 				<vue-three-fog
 					color="#000000"
@@ -19,21 +20,11 @@
 					:far="4"
 				></vue-three-fog>
 				<vue-three-perspective-camera
-					:fov="60"
 					:near="1/64"
 					:far="4"
-					:position="[0, 0, 4/2]"
-				>
-					<vue-three-orbit-controls
-						:max-distance="4"
-						:enable-damping="true"
-						:damping-factor="1/12"
-						:rotate-speed="1/6"
-						:zoom-speed="1"
-						:key-pan-speed="1/2"
-						:enable-keys="false"
-					></vue-three-orbit-controls>
-				</vue-three-perspective-camera>
+					:position="cameraPosition"
+					:quaternion="cameraQuaternion"
+				></vue-three-perspective-camera>
 				<component
 					v-for="({component, props}, key) in threeObjects"
 					:key="key"
@@ -43,7 +34,7 @@
 				<vue-three-point-light
 					:distance="4"
 					:decay="2"
-					:position="[1, 1, 1]"
+					:position="lightPosition"
 				></vue-three-point-light>
 				<vue-three-point-light
 					:distance="4"
@@ -51,6 +42,17 @@
 					:position="[-1, -1, -1]"
 				></vue-three-point-light>
 			</vue-three-scene>
+			<vue-three-orbit-controls
+				:max-distance="4"
+				:enable-damping="true"
+				:damping-factor="1/12"
+				:rotate-speed="1/6"
+				:zoom-speed="1"
+				:key-pan-speed="1/2"
+				:enable-keys="false"
+				:position.sync="cameraPosition"
+				:quaternion.sync="cameraQuaternion"
+			></vue-three-orbit-controls>
 		</vue-three-renderer>
 		<script src="demo/demo.js"></script>
 	</body>
