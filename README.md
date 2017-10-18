@@ -1,5 +1,37 @@
 # VueTHREE
 
+A Vue wrapper for THREE.
+
+## dependencies
+
+- [Vue](https://github.com/vuejs/vue)
+- [THREE](https://github.com/mrdoob/three.js)
+
+## setup
+
+Install the [package](https://www.npmjs.com/package/vuethree) via npm.
+
+```sh
+
+npm install vuethree
+
+```
+
+---
+
+Include the code in your page via a CDN.
+
+```html
+
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/three"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
+<script src="https://unpkg.com/vuethree"></script>
+
+```
+
+## usage
+
 ```html
 
 <vue-three-renderer clear-color="#00ff00">
