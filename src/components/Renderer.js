@@ -27,6 +27,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		clearColor: {
+			type: [String, Number],
+			default: 0x000000,
+		},
+		clearAlpha: {
+			type: Number,
+			default: 1,
+		},
 		renderSceneInterval: {
 			type: Number,
 			default: 1000 / 60,
@@ -62,6 +70,9 @@ export default {
 						this.camera.updateProjectionMatrix();
 					}
 				}
+			},
+			setClearColor() {
+				this.renderer.setClearColor(this.clearColor, this.clearAlpha);
 			},
 		}).forEach(([key, fn]) => {
 			this.$options.computed[key] = fn;

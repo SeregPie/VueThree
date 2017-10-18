@@ -121,27 +121,8 @@ export default {
 	},
 
 	data() {
-		let object = new THREE.PerspectiveCamera();
-		console.log(this.$el);
-		{
-			if (Array.isArray(this.position)) {
-				object.position.fromArray(this.position);
-			} else {
-				Object.assign(object.position, this.position);
-			}
-		}
-
-		{
-			if (Array.isArray(this.quaternion)) {
-				object.quaternion.fromArray(this.quaternion);
-			} else {
-				Object.assign(object.quaternion, this.quaternion);
-			}
-		}
 		return {
-			frozen$controls: Object.freeze({
-				o: new THREE.OrbitControls(object),
-			}),
+			frozen$controls: Object.freeze({o: null}),
 		};
 	},
 
@@ -227,17 +208,41 @@ export default {
 				this.controls.enableKeys = this.enableKeys;
 			},
 		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
+			this.$options.computed[key] = function() {
+				if (this.controls) {
+					fn.call(this);
+				}
+			};
 			this.$options.watch[key] = Function_noop;
 		});
 	},
 
 	mounted() {
+		let object = new THREE.PerspectiveCamera();
+		{
+			if (Array.isArray(this.position)) {
+				object.position.fromArray(this.position);
+			} else {
+				Object.assign(object.position, this.position);
+			}
+		}
+		{
+			if (Array.isArray(this.quaternion)) {
+				object.quaternion.fromArray(this.quaternion);
+			} else {
+				Object.assign(object.quaternion, this.quaternion);
+			}
+		}
+		this.frozen$controls = Object.freeze({
+			o: new THREE.OrbitControls(object, this.$el),
+		});
 		this.updateControlsScheduler();
 	},
 
 	beforeDestroy() {
-		this.controls.dispose();
+		if (this.controls) {
+			this.controls.dispose();
+		}
 	},
 
 	computed: {
@@ -263,9 +268,11 @@ export default {
 
 	methods: {
 		updateControls() {
-			this.controls.update();
-			this.$emit('update:position', this.controls.object.position.toArray());
-			this.$emit('update:quaternion', this.controls.object.quaternion.toArray());
+			if (this.controls) {
+				this.controls.update();
+				this.$emit('update:position', this.controls.object.position.toArray());
+				this.$emit('update:quaternion', this.controls.object.quaternion.toArray());
+			}
 		},
 	},
 };

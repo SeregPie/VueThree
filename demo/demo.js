@@ -4,6 +4,7 @@
 		el: '#demo',
 
 		data: {
+			backgroundColor: '#1a3041',
 			lightPosition: [1, 1, 1],
 			cameraPosition: [0, 0, 4/2],
 			cameraQuaternion: [0, 0, 0, 1],
