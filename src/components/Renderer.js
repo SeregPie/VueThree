@@ -41,7 +41,7 @@ export default {
 			frozen$renderer: Object.freeze({
 				o: new THREE.WebGLRenderer({
 					alpha: this.alpha,
-					antialias: this.alpha,
+					antialias: this.antialias,
 				}),
 			}),
 			frozen$scene: {o: null},
