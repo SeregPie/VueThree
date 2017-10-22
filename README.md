@@ -1,6 +1,6 @@
 # VueTHREE
 
-*early development stage*
+*in the early development stage*
 
 A Vue wrapper for THREE.
 
