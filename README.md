@@ -1,8 +1,8 @@
 # VueTHREE
 
-A Vue wrapper for THREE.
+*early development stage*
 
-*in the early development stage*
+A Vue wrapper for THREE.
 
 ## dependencies
 
@@ -68,7 +68,7 @@ Include the code in your page via a CDN.
 
 Create custom THREE components.
 
-```html
+```js
 
 let MySphere = {
 	mixins: [VueTHREE.Object3D],
