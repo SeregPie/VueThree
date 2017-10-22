@@ -2,6 +2,8 @@
 
 A Vue wrapper for THREE.
 
+*in the early development stage*
+
 ## dependencies
 
 - [Vue](https://github.com/vuejs/vue)
@@ -48,7 +50,10 @@ Include the code in your page via a CDN.
 			:is="threeObject.component"
 			v-bind="threeObject.props"
 		></component>
-		<vue-three-point-light :decay="2" :position="[50, 0, 0]"></vue-three-point-light>
+		<vue-three-point-light
+			:decay="2"
+			:position="[50, 0, 0]"
+		></vue-three-point-light>
 	</vue-three-scene>
 	<vue-three-orbit-controls
 		:position.sync="cameraPosition"
