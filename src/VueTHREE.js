@@ -9,7 +9,7 @@ import OrbitControls from './components/OrbitControls.js';
 import PointLight from './components/PointLight.js';
 
 Vue.component(Renderer.name, Renderer);
-//this.Vue.component(Object3D.name, Object3D);
+Vue.component(Object3D.name, Object3D);
 Vue.component(Scene.name, Scene);
 Vue.component(Fog.name, Fog);
 Vue.component(PerspectiveCamera.name, PerspectiveCamera);

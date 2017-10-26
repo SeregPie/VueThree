@@ -1,15 +1,12 @@
 {
 	"name": "vuethree",
-	"version": "17.10.19",
+	"version": "17.10.26",
 	"description": "A Vue wrapper for THREE.",
-	"main": "VueTHREE.min.js",
+	"main": "VueTHREE.js",
 	"scripts": {
-		"build": "rollup -c build/rollup.config.js",
-		"build:min": "rollup -c build/rollup.min.config.js",
-		"build:es5": "rollup -c build/rollup.es5.config.js",
-		"build:all": "npm run build && npm run build:min && npm run build:es5",
-		"dev": "rollup -c build/rollup.config.js -w",
-		"prepublish": "npm run build:all"
+		"build": "rollup -c",
+		"dev": "rollup -c -w",
+		"prepublishOnly": "npm run build"
 	},
 	"repository": {
 		"type": "git",
@@ -30,17 +27,14 @@
 		"vue": "^2.5.2"
 	},
 	"devDependencies": {
-		"babel-core": "^6.26.0",
-		"babel-minify": "^0.2.0",
 		"babel-plugin-transform-runtime": "^6.23.0",
 		"babel-polyfill": "^6.26.0",
-		"babel-preset-env": "^1.6.0",
-		"babel-runtime": "^6.26.0",
+		"babel-preset-env": "^1.6.1",
 		"eslint": "^4.9.0",
 		"rollup": "^0.50.0",
 		"rollup-plugin-babel": "^3.0.2",
 		"rollup-plugin-babel-minify": "^3.1.2",
-		"rollup-plugin-commonjs": "^8.2.1",
+		"rollup-plugin-commonjs": "^8.2.5",
 		"rollup-plugin-node-resolve": "^3.0.0"
 	}
 }

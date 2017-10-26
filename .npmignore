@@ -1,7 +1,7 @@
 .eslintrc.js
 
 /src/
-/build/
+/rollup.config.js
 
 /demo/
 /index.html

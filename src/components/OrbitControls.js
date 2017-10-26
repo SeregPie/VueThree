@@ -1,6 +1,8 @@
 import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
+import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
+import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 
 export default {
 	name: 'VueThreeOrbitControls',
@@ -219,20 +221,8 @@ export default {
 
 	mounted() {
 		let object = new THREE.PerspectiveCamera();
-		{
-			if (Array.isArray(this.position)) {
-				object.position.fromArray(this.position);
-			} else {
-				Object.assign(object.position, this.position);
-			}
-		}
-		{
-			if (Array.isArray(this.quaternion)) {
-				object.quaternion.fromArray(this.quaternion);
-			} else {
-				Object.assign(object.quaternion, this.quaternion);
-			}
-		}
+		THREE_Vector3_setFrom(object.position, this.position);
+		THREE_Quaternion_setFrom(object.quaternion, this.quaternion);
 		this.frozen$controls = Object.freeze({
 			o: new THREE.OrbitControls(object, this.$el),
 		});

@@ -1,6 +1,8 @@
 import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
+import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
+import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 
 export default {
 	name: 'VueThreeObject',
@@ -45,30 +47,15 @@ export default {
 	beforeCreate() {
 		Object.entries({
 			updatePosition() {
-				if (Array.isArray(this.position)) {
-					this.object.position.fromArray(this.position);
-				} else {
-					Object.assign(this.object.position, this.position);
-				}
+				THREE_Vector3_setFrom(this.object.position, this.position);
 			},
 
 			updateQuaternion() {
-				if (Array.isArray(this.quaternion)) {
-					this.object.quaternion.fromArray(this.quaternion);
-				} else {
-					Object.assign(this.object.quaternion, this.quaternion);
-				}
+				THREE_Quaternion_setFrom(this.object.quaternion, this.quaternion);
 			},
 
 			updateScale() {
-				if (Array.isArray(this.scale)) {
-					this.object.scale.fromArray(this.scale);
-				} else
-				if (Number.isFinite(this.scale)) {
-					this.object.scale.setScalar(this.scale);
-				} else {
-					Object.assign(this.object.scale, this.scale);
-				}
+				THREE_Vector3_setFrom(this.object.scale, this.scale);
 			},
 		}).forEach(([key, fn]) => {
 			this.$options.computed[key] = fn;
