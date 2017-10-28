@@ -11,7 +11,7 @@
 		},
 
 		computed: {
-			threeSphereHelper() {
+			threeSphereHelper: function() {
 				return {
 					component: 'mySphereHelper',
 					props: {
@@ -20,9 +20,9 @@
 				};
 			},
 
-			threePoints() {
-				let returns = {};
-				for (let i = 0; i < 100; ++i) {
+			threePoints: function() {
+				var returns = {};
+				for (var i = 0; i < 100; ++i) {
 					returns[Math.random()] = {
 						component: 'myPoint',
 						props: {
@@ -37,24 +37,22 @@
 				return returns;
 			},
 
-			threeObjects() {
-
-				let returns = {};
-				{
-					let object = this.threeSphereHelper;
-					if (object) {
-						returns['threeSphereHelper'] = object;
-					}
+			threeObjects: function() {
+				var returns = {};
+				if (this.threeSphereHelper) {
+					returns['threeSphereHelper'] = this.threeSphereHelper;
 				}
-				for (let [key, object] of Object.entries(this.threePoints)) {
-					returns[`threePoint.${key}`] = object;
-				}
+				Object.entries(this.threePoints).forEach(function(entry) {
+					var key = entry[0];
+					var object = entry[1];
+					returns['threePoint'+'.'+key] = object;
+				});
 				return returns;
 			},
 		},
 
 		methods: {
-			test() {
+			test: function() {
 				this.lightPosition = [Math.random(), Math.random(), Math.random()];
 			},
 		},
@@ -69,7 +67,7 @@
 				},
 
 				THREE: {
-					object() {
+					object: function() {
 						return new THREE.Mesh(
 							new THREE.IcosahedronGeometry(1, 3),
 							new THREE.MeshBasicMaterial({
@@ -82,18 +80,20 @@
 					},
 				},
 
-				beforeCreate() {
+				beforeCreate: function() {
 					Object.entries({
-						updateColor() {
+						updateColor: function() {
 							this.object.material.color.set(this.color);
 						},
-					}).forEach(([key, fn]) => {
+					}).forEach(function(entry) {
+						var key = entry[0];
+						var fn = entry[1];
 						this.$options.computed[key] = fn;
 						this.$options.watch[key] = function() {};
-					});
+					}.bind(this));
 				},
 
-				beforeDestroy() {
+				beforeDestroy: function() {
 					this.object.geometry.dispose();
 					this.object.material.dispose();
 				},
@@ -111,7 +111,7 @@
 				},
 
 				THREE: {
-					object() {
+					object: function() {
 						return new THREE.Mesh(
 							new THREE.SphereBufferGeometry(1/2, 24, 24),
 							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
@@ -119,18 +119,20 @@
 					},
 				},
 
-				beforeCreate() {
+				beforeCreate: function() {
 					Object.entries({
-						updateColor() {
+						updateColor: function() {
 							this.object.material.emissive.set(this.color);
 						},
-					}).forEach(([key, fn]) => {
+					}).forEach(function(entry) {
+						var key = entry[0];
+						var fn = entry[1];
 						this.$options.computed[key] = fn;
 						this.$options.watch[key] = function() {};
-					});
+					}.bind(this));
 				},
 
-				beforeDestroy() {
+				beforeDestroy: function() {
 					this.object.geometry.dispose();
 					this.object.material.dispose();
 				},

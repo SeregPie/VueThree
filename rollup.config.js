@@ -1,6 +1,4 @@
 import babel from 'rollup-plugin-babel';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import minify from 'rollup-plugin-babel-minify';
 
 let globals = {
@@ -9,6 +7,7 @@ let globals = {
 };
 
 export default {
+	debug: true,
 	input: 'src/VueTHREE.js',
 	external: Object.keys(globals),
 	output: {
@@ -17,18 +16,18 @@ export default {
 		name: 'VueTHREE',
 		globals,
 	},
+
 	plugins: [
 		babel({
-			exclude: 'node_modules/**',
 			presets: [
-				['env', {modules: false}],
+				['env', {
+					targets: {
+						browsers: 'last 2 versions',
+					},
+					modules: false,
+				}],
 			],
-			plugins: ['transform-runtime'],
-			runtimeHelpers: true,
-		}),
-		nodeResolve(),
-		commonjs({
-			include: 'node_modules/**',
+			plugins: ['external-helpers'],
 		}),
 		minify({comments: false}),
 	],
