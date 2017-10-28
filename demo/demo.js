@@ -75,7 +75,7 @@
 								transparent: true,
 								vertexColors: THREE.VertexColors,
 								wireframe: true,
-							}),
+							})
 						);
 					},
 				},
@@ -114,7 +114,7 @@
 					object: function() {
 						return new THREE.Mesh(
 							new THREE.SphereBufferGeometry(1/2, 24, 24),
-							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
+							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3})
 						);
 					},
 				},
