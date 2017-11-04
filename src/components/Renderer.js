@@ -1,5 +1,6 @@
 import THREE from 'three';
 
+import Element_getBoundingClientRect from '../helpers/Element/getBoundingClientRect';
 import Function_noop from '../helpers/Function/noop';
 
 export default {
@@ -35,6 +36,10 @@ export default {
 			type: Number,
 			default: 1,
 		},
+		preserveDrawingBuffer: {
+			type: Boolean,
+			default: false,
+		},
 		renderSceneInterval: {
 			type: Number,
 			default: 1000 / 60,
@@ -53,6 +58,7 @@ export default {
 				o: new THREE.WebGLRenderer({
 					alpha: this.alpha,
 					antialias: this.antialias,
+					preserveDrawingBuffer: this.preserveDrawingBuffer,
 				}),
 			}),
 			frozen$scene: {o: null},
@@ -71,6 +77,7 @@ export default {
 					}
 				}
 			},
+
 			setClearColor() {
 				this.renderer.setClearColor(this.clearColor, this.clearAlpha);
 			},
@@ -142,7 +149,7 @@ export default {
 
 	methods: {
 		updateContainerSize() {
-			let {width, height} = this.$el.getBoundingClientRect();
+			let {width, height} = Element_getBoundingClientRect(this.$el);
 			this.containerWidth = width;
 			this.containerHeight = height;
 		},

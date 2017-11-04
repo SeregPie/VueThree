@@ -1,5 +1,5 @@
-import babel from 'rollup-plugin-babel';
-import minify from 'rollup-plugin-babel-minify';
+import buble from 'rollup-plugin-buble';
+import uglify from 'rollup-plugin-uglify';
 
 let globals = {
 	'vue': 'Vue',
@@ -7,7 +7,6 @@ let globals = {
 };
 
 export default {
-	debug: true,
 	input: 'src/VueTHREE.js',
 	external: Object.keys(globals),
 	output: {
@@ -16,19 +15,8 @@ export default {
 		name: 'VueTHREE',
 		globals,
 	},
-
 	plugins: [
-		babel({
-			presets: [
-				['env', {
-					targets: {
-						browsers: 'last 2 versions',
-					},
-					modules: false,
-				}],
-			],
-			plugins: ['external-helpers'],
-		}),
-		minify({comments: false}),
+		buble(),
+		uglify(),
 	],
 };
