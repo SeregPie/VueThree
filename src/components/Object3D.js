@@ -28,6 +28,15 @@ export default {
 			type: [Object, Array, Number],
 			default: 1,
 		},
+		name: {
+			type: String,
+			default: '',
+		},
+		userData: {
+			default() {
+				return {};
+			},
+		},
 	},
 
 	THREE: {
@@ -46,16 +55,24 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updatePosition() {
+			setPosition() {
 				THREE_Vector3_setFrom(this.object.position, this.position);
 			},
 
-			updateQuaternion() {
+			setQuaternion() {
 				THREE_Quaternion_setFrom(this.object.quaternion, this.quaternion);
 			},
 
-			updateScale() {
+			setScale() {
 				THREE_Vector3_setFrom(this.object.scale, this.scale);
+			},
+
+			setName() {
+				this.object.name = this.name;
+			},
+
+			setUserData() {
+				this.object.userData = this.userData;
 			},
 		}).forEach(([key, fn]) => {
 			this.$options.computed[key] = fn;

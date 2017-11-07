@@ -68,7 +68,7 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updateRendererSize() {
+			setSize() {
 				this.renderer.setSize(this.containerWidth, this.containerHeight);
 				if (this.containerWidth > 0 && this.containerHeight > 0) {
 					if (this.camera) {

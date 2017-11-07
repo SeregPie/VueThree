@@ -104,3 +104,17 @@ let MySphere = {
 },
 
 ```
+
+## components
+
+### Object3D
+
+`vue-three-object`
+
+| property | type | default |
+| ---: | :--- | :--- |
+| `position` | `[Object, Array]` | `[0, 0, 0]` |
+| `quaternion` | `[Object, Array]` | `[0, 0, 0, 1]` |
+| `scale` | `[Object, Array, Number]` | `1` |
+| `name` | `String` | `''` |
+| `userData` | `userData` | `{}` |

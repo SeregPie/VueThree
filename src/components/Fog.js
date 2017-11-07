@@ -38,15 +38,15 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updateColor() {
+			setColor() {
 				this.fog.color.set(this.color);
 			},
 
-			updateNear() {
+			setNear() {
 				this.fog.near = this.near;
 			},
 
-			updateFar() {
+			setFar() {
 				this.fog.far = this.far;
 			},
 		}).forEach(([key, fn]) => {

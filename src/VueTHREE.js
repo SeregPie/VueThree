@@ -8,7 +8,7 @@ import PerspectiveCamera from './components/PerspectiveCamera';
 import OrbitControls from './components/OrbitControls';
 import PointLight from './components/PointLight';
 
-if (true) { // if window
+if (typeof window !== 'undefined') {
 	Vue.component(Renderer.name, Renderer);
 	Vue.component(Object3D.name, Object3D);
 	Vue.component(Scene.name, Scene);

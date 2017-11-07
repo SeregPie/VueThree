@@ -37,19 +37,19 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updateColor() {
+			setColor() {
 				this.object.color.set(this.color);
 			},
 
-			updateIntensity() {
+			setIntensity() {
 				this.object.intensity = this.intensity;
 			},
 
-			updateDistance() {
+			setDistance() {
 				this.object.distance = this.distance;
 			},
 
-			updateDecay() {
+			setDecay() {
 				this.object.decay = this.decay;
 			},
 		}).forEach(([key, fn]) => {

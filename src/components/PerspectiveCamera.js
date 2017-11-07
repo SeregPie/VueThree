@@ -33,15 +33,15 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updateFov() {
+			setFov() {
 				this.object.fov = this.fov;
 			},
 
-			updateNear() {
+			setNear() {
 				this.object.near = this.near;
 			},
 
-			updateFar() {
+			setFar() {
 				this.object.far = this.far;
 			},
 		}).forEach(([key, fn]) => {

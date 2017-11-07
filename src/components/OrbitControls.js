@@ -130,83 +130,83 @@ export default {
 
 	beforeCreate() {
 		Object.entries({
-			updateEnabled() {
+			setEnabled() {
 				this.controls.enabled = this.enabled;
 			},
 
-			updateMinDistance() {
+			setMinDistance() {
 				this.controls.minDistance = this.minDistance;
 			},
 
-			updateMaxDistance() {
+			setMaxDistance() {
 				this.controls.maxDistance = this.maxDistance;
 			},
 
-			updateMinZoom() {
+			setMinZoom() {
 				this.controls.minZoom = this.minZoom;
 			},
 
-			updateMaxZoom() {
+			setMaxZoom() {
 				this.controls.maxZoom = this.maxZoom;
 			},
 
-			updateMinPolarAngle() {
+			setMinPolarAngle() {
 				this.controls.minPolarAngle = this.minPolarAngle;
 			},
 
-			updateMaxPolarAngle() {
+			setMaxPolarAngle() {
 				this.controls.maxPolarAngle = this.maxPolarAngle;
 			},
 
-			updateMinAzimuthAngle() {
+			setMinAzimuthAngle() {
 				this.controls.minAzimuthAngle = this.minAzimuthAngle;
 			},
 
-			updateMaxAzimuthAngle() {
+			setMaxAzimuthAngle() {
 				this.controls.maxAzimuthAngle = this.maxAzimuthAngle;
 			},
 
-			updateEnableDamping() {
+			setEnableDamping() {
 				this.controls.enableDamping = this.enableDamping;
 			},
 
-			updateDampingFactor() {
+			setDampingFactor() {
 				this.controls.dampingFactor = this.dampingFactor;
 			},
 
-			updateEnableZoom() {
+			setEnableZoom() {
 				this.controls.enableZoom = this.enableZoom;
 			},
 
-			updateZoomSpeed() {
+			setZoomSpeed() {
 				this.controls.zoomSpeed = this.zoomSpeed;
 			},
 
-			updateEnableRotate() {
+			setEnableRotate() {
 				this.controls.enableRotate = this.enableRotate;
 			},
 
-			updateRotateSpeed() {
+			setRotateSpeed() {
 				this.controls.rotateSpeed = this.rotateSpeed;
 			},
 
-			updateEnablePan() {
+			setEnablePan() {
 				this.controls.enablePan = this.enablePan;
 			},
 
-			updateKeyPanSpeed() {
+			setKeyPanSpeed() {
 				this.controls.keyPanSpeed = this.keyPanSpeed;
 			},
 
-			updateAutoRotate() {
+			setAutoRotate() {
 				this.controls.autoRotate = this.autoRotate;
 			},
 
-			updateAutoRotateSpeed() {
+			setAutoRotateSpeed() {
 				this.controls.autoRotateSpeed = this.autoRotateSpeed;
 			},
 
-			updateEnableKeys() {
+			setEnableKeys() {
 				this.controls.enableKeys = this.enableKeys;
 			},
 		}).forEach(([key, fn]) => {
