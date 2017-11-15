@@ -32,6 +32,14 @@ Include the code in your page via a CDN.
 
 ```
 
+Include [polyfills](https://polyfill.io/) to support older browsers.
+
+```html
+
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Number.isFinite,Object.entries"></script>
+
+```
+
 ## usage
 
 ```html
@@ -40,7 +48,7 @@ Include the code in your page via a CDN.
 	<vue-three-scene>
 		<vue-three-fog color="#ff0000"></vue-three-fog>
 		<vue-three-perspective-camera
-			:fov="60"
+			:fov="75"
 			:position="cameraPosition"
 			:quaternion="cameraQuaternion"
 		></vue-three-perspective-camera>
@@ -78,28 +86,28 @@ let MySphere = {
 		color: {},
 	},
 
-	THREE: {
+	computed: {
 		object() {
 			return new THREE.Mesh(
 				new THREE.SphereBufferGeometry(1/2, 24, 24),
 				new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
 			);
 		},
-	},
 
-	beforeDestroy() {
-		this.object.geometry.dispose();
-		this.object.material.dispose();
-	},
-
-	computed: {
-		updateColor() {
+		setMaterialEmissive() {
 			this.object.material.emissive.set(this.color);
 		},
 	},
 
 	watch: {
-		updateColor() {},
+		setMaterialEmissive() {},
+	},
+
+	methods: {
+		destroyObject(object) {
+			object.geometry.dispose();
+			object.material.dispose();
+		},
 	},
 },
 

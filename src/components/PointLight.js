@@ -29,12 +29,6 @@ export default {
 		},
 	},
 
-	THREE: {
-		object() {
-			return new THREE.PointLight();
-		},
-	},
-
 	beforeCreate() {
 		Object.entries({
 			setColor() {
@@ -58,7 +52,11 @@ export default {
 		});
 	},
 
-	computed: {},
+	computed: {
+		object() {
+			return new THREE.PointLight();
+		},
+	},
 
 	watch: {},
 };

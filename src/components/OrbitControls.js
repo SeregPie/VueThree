@@ -116,7 +116,7 @@ export default {
 			type: Boolean,
 			default: true,
 		},
-		updateControlsInterval: {
+		intervalBetweenUpdateControls: {
 			type: Number,
 			default: 1000 / 60,
 		},
@@ -124,7 +124,13 @@ export default {
 
 	data() {
 		return {
-			frozen$controls: Object.freeze({o: null}),
+			frozen$object: Object.freeze({
+				o: this.createObject(),
+			}),
+			value: Object.freeze({
+				position: this.position,
+				quaternion: this.quaternion,
+			}),
 		};
 	},
 
@@ -210,59 +216,94 @@ export default {
 				this.controls.enableKeys = this.enableKeys;
 			},
 		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = function() {
-				if (this.controls) {
-					fn.call(this);
-				}
-			};
+			this.$options.computed[key] = fn;
 			this.$options.watch[key] = Function_noop;
 		});
 	},
 
 	mounted() {
-		let object = new THREE.PerspectiveCamera();
-		THREE_Vector3_setFrom(object.position, this.position);
-		THREE_Quaternion_setFrom(object.quaternion, this.quaternion);
-		this.frozen$controls = Object.freeze({
-			o: new THREE.OrbitControls(object, this.$el),
-		});
-		this.updateControlsScheduler();
+		this.startToUpdateControls();
 	},
 
 	beforeDestroy() {
-		if (this.controls) {
-			this.controls.dispose();
-		}
+		this.destroyControls(this.controls);
 	},
 
 	computed: {
-		controls() {
-			return this.frozen$controls.o;
+		object() {
+			return this.frozen$object.o;
 		},
 
-		updateControlsScheduler() {
+		controls() {
+			return new THREE.OrbitControls(this.object, this.$el);
+		},
+
+		startToUpdateControls() {
 			return function() {
 				if (!this._isDestroyed) {
 					setTimeout(() => {
 						requestAnimationFrame(() => {
-							this.updateControlsScheduler();
+							this.startToUpdateControls();
 						});
-					}, this.updateControlsInterval);
+					}, this.intervalBetweenUpdateControls);
 					this.updateControls();
 				}
 			};
 		},
 	},
 
-	watch: {},
+	watch: {
+		controls: {
+			handler(newControls, oldControls) {
+				if (oldControls) {
+					this.destroyControls(oldControls);
+				}
+			},
+			immediate: true,
+		},
+
+		position(position) {
+			if (position !== this.value.position) {
+				this.updateObject();
+			}
+		},
+
+		quaternion(quaternion) {
+			if (quaternion !== this.value.quaternion) {
+				this.updateObject();
+			}
+		},
+
+		value({position, quaternion}) {
+			this.$emit('update:position', position);
+			this.$emit('update:quaternion', quaternion);
+		},
+	},
 
 	methods: {
+		updateObject() {
+			this.frozen$object = Object.freeze({
+				o: this.createObject(),
+			});
+		},
+
+		createObject() {
+			let object = new THREE.PerspectiveCamera();
+			THREE_Vector3_setFrom(object.position, this.position);
+			THREE_Quaternion_setFrom(object.quaternion, this.quaternion);
+			return object;
+		},
+
+		destroyControls(controls) {
+			controls.dispose();
+		},
+
 		updateControls() {
-			if (this.controls) {
-				this.controls.update();
-				this.$emit('update:position', this.controls.object.position.toArray());
-				this.$emit('update:quaternion', this.controls.object.quaternion.toArray());
-			}
+			this.controls.update();
+			this.value = Object.freeze({
+				position: this.object.position.toArray(),
+				quaternion: this.object.quaternion.toArray(),
+			});
 		},
 	},
 };

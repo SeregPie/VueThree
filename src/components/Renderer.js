@@ -1,22 +1,40 @@
 import THREE from 'three';
 
-import Element_getBoundingClientRect from '../helpers/Element/getBoundingClientRect';
 import Function_noop from '../helpers/Function/noop';
 
 export default {
 	name: 'VueThreeRenderer',
 
 	render(createElement) {
-		return createElement('div', {
-			style: {
-				position: 'absolute',
-				left: 0,
-				right: 0,
-				top: 0,
-				bottom: 0,
-				overflow: 'hidden',
-			},
-		}, this.$slots.default);
+		return(
+			createElement(
+				'div',
+				{
+					style: {
+						position: 'relative',
+						width: '100%',
+						height: '100%',
+					},
+				},
+				[
+					createElement(
+						'div',
+						{
+							style: {
+								position: 'absolute',
+								left: 0,
+								right: 0,
+								top: 0,
+								bottom: 0,
+								overflow: 'hidden',
+							},
+							ref: 'container'
+						},
+						this.$slots.default/*,*/
+					),
+				]/*,*/
+			)
+		);
 	},
 
 	props: {
@@ -40,11 +58,11 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		renderSceneInterval: {
+		intervalBetweenRenderScene: {
 			type: Number,
 			default: 1000 / 60,
 		},
-		updateContainerSizeInterval: {
+		intervalBetweenUpdateContainerSize: {
 			type: Number,
 			default: 1000,
 		},
@@ -88,9 +106,9 @@ export default {
 	},
 
 	mounted() {
-		this.$el.appendChild(this.renderer.domElement);
-		this.updateContainerSizeScheduler();
-		this.renderSceneScheduler();
+		this.$refs.container.appendChild(this.renderer.domElement);
+		this.startToUpdateContainerSize();
+		this.startToRenderScene();
 	},
 
 	computed: {
@@ -118,27 +136,27 @@ export default {
 			},
 		},
 
-		updateContainerSizeScheduler() {
+		startToUpdateContainerSize() {
 			return function() {
 				if (!this._isDestroyed) {
 					setTimeout(() => {
 						requestAnimationFrame(() => {
-							this.updateContainerSizeScheduler();
+							this.startToUpdateContainerSize();
 						});
-					}, this.updateContainerSizeInterval);
+					}, this.intervalBetweenUpdateContainerSize);
 					this.updateContainerSize();
 				}
 			};
 		},
 
-		renderSceneScheduler() {
+		startToRenderScene() {
 			return function() {
 				if (!this._isDestroyed) {
 					setTimeout(() => {
 						requestAnimationFrame(() => {
-							this.renderSceneScheduler();
+							this.startToRenderScene();
 						});
-					}, this.renderSceneInterval);
+					}, this.intervalBetweenRenderScene);
 					this.renderScene();
 				}
 			};
@@ -149,7 +167,7 @@ export default {
 
 	methods: {
 		updateContainerSize() {
-			let {width, height} = Element_getBoundingClientRect(this.$el);
+			let {width, height} = this.$el.getBoundingClientRect();
 			this.containerWidth = width;
 			this.containerHeight = height;
 		},

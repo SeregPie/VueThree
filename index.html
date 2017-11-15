@@ -1,78 +1,102 @@
 <!DOCTYPE html>
-<html style="height: 100%;">
+<html>
 	<head>
 		<title>VueTHREE</title>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.js"></script>
+		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Number.isFinite,Object.entries"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js"></script>
 		<script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
 		<script src="VueTHREE.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.0.0-alpha.3/theme-chalk/index.css"/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.0.0-alpha.3/index.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.0.0-alpha.3/locale/en.min.js"></script>
-		<script>ELEMENT.locale(ELEMENT.lang.en)</script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/0.17.0/vuetify.min.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/0.17.0/vuetify.min.js"></script>
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+		</style>
 	</head>
-	<body style="height: 100%;">
-		<el-container style="height: 100%;" id="demo">
-			<el-aside width="400px">
-				<div @click="test">TEST</div>
-				<div class="block">
-					<span class="demonstration">With default value</span>
-					<el-color-picker v-model="backgroundColor"></el-color-picker>
+	<body>
+		<v-app id="App" v-cloak>
+			<v-navigation-drawer fixed clipped app v-model="drawer">
+				<div class="ma-3">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 				</div>
-			</el-aside>
-			<el-container>
-				<el-main>
-					<div style="position: relative; width: 100%; height: 100%;">
-						<vue-three-renderer :clear-color="backgroundColor" id="demo">
-							<vue-three-scene>
-								<vue-three-fog
-									:color="backgroundColor"
-									:near="1/24"
-									:far="4"
-								></vue-three-fog>
-								<vue-three-perspective-camera
-									:near="1/64"
-									:far="4"
-									:position="cameraPosition"
-									:quaternion="cameraQuaternion"
-								></vue-three-perspective-camera>
-								<component
-									v-for="({component, props}, key) in threeObjects"
-									:key="key"
-									:is="component"
-									v-bind="props"
-								></component>
-								<vue-three-point-light
-									:distance="4"
-									:decay="2"
-									:position="lightPosition"
-								></vue-three-point-light>
-								<vue-three-point-light
-									:distance="4"
-									:decay="2"
-									:position="[-1, -1, -1]"
-								></vue-three-point-light>
-							</vue-three-scene>
-							<vue-three-orbit-controls
-								:max-distance="4"
-								:enable-damping="true"
-								:damping-factor="1/12"
-								:rotate-speed="1/6"
-								:zoom-speed="1"
-								:key-pan-speed="1/2"
-								:enable-keys="false"
-								:position.sync="cameraPosition"
-								:quaternion.sync="cameraQuaternion"
-							></vue-three-orbit-controls>
-						</vue-three-renderer>
-					</div>
-				</el-main>
-			</el-container>
-		</el-container>
-		<script src="demo/demo.js"></script>
+				<div class="ma-3">
+					<v-btn
+						block
+						color="primary"
+						@click="resetCamera"
+					>
+						reset camera
+					</v-btn>
+				</div>
+				<div class="ma-3">
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				</div>
+				<div class="ma-3">
+					<v-btn
+						block
+						color="primary"
+						@click="redrawPoints"
+					>
+						redraw points
+					</v-btn>
+				</div>
+			</v-navigation-drawer>
+			<v-toolbar color="amber darken-3" dark fixed clipped-left app>
+				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+				<v-toolbar-title>VueTHREE</v-toolbar-title>
+				<v-spacer></v-spacer>
+				<v-btn icon href="https://github.com/SeregPie/VueTHREE" target="_blank">
+					<v-icon>fa-github</v-icon>
+				</v-btn>
+			</v-toolbar>
+			<v-content>
+				<v-container fluid fill-height>
+					<vue-three-renderer :clear-color="backgroundColor">
+						<vue-three-scene>
+							<vue-three-fog
+								:color="backgroundColor"
+								:near="1/24"
+								:far="4"
+							></vue-three-fog>
+							<vue-three-perspective-camera
+								:near="1/64"
+								:far="4"
+								:position="cameraPosition"
+								:quaternion="cameraQuaternion"
+							></vue-three-perspective-camera>
+							<component
+								v-for="({component, props}, key) in threeObjects"
+								:key="key"
+								:is="component"
+								v-bind="props"
+							></component>
+							<vue-three-point-light
+								:distance="4"
+								:decay="2"
+								:position="lightPosition"
+							></vue-three-point-light>
+						</vue-three-scene>
+						<vue-three-orbit-controls
+							:max-distance="4"
+							:enable-damping="true"
+							:damping-factor="1/12"
+							:rotate-speed="1/6"
+							:zoom-speed="1"
+							:key-pan-speed="1/2"
+							:enable-keys="false"
+							:position.sync="cameraPosition"
+							:quaternion.sync="cameraQuaternion"
+						></vue-three-orbit-controls>
+					</vue-three-renderer>
+				</v-container>
+			</v-content>
+		</v-app>
+		<script src="demo/index.js"></script>
 	</body>
 </html>

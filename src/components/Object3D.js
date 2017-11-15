@@ -39,20 +39,6 @@ export default {
 		},
 	},
 
-	THREE: {
-		object() {
-			return new THREE.Object3D();
-		},
-	},
-
-	data() {
-		return {
-			frozen$object: Object.freeze({
-				o: this.$options.THREE.object.call(this),
-			}),
-		};
-	},
-
 	beforeCreate() {
 		Object.entries({
 			setPosition() {
@@ -80,17 +66,14 @@ export default {
 		});
 	},
 
-	mounted() {
-		this.$parent.object.add(this.object);
-	},
-
 	beforeDestroy() {
 		this.$parent.object.remove(this.object);
+		this.destroyObject(this.object);
 	},
 
 	computed: {
 		object() {
-			return this.frozen$object.o;
+			return new THREE.Object3D();
 		},
 
 		renderer() {
@@ -98,5 +81,20 @@ export default {
 		},
 	},
 
-	watch: {},
+	watch: {
+		object: {
+			handler(newObject, oldObject) {
+				if (oldObject) {
+					this.$parent.object.remove(oldObject);
+					this.destroyObject(oldObject);
+				}
+				this.$parent.object.add(newObject);
+			},
+			immediate: true,
+		},
+	},
+
+	methods: {
+		destroyObject(object) {},
+	},
 };

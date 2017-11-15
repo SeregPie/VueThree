@@ -25,12 +25,6 @@ export default {
 		},
 	},
 
-	THREE: {
-		object() {
-			return new THREE.PerspectiveCamera();
-		},
-	},
-
 	beforeCreate() {
 		Object.entries({
 			setFov() {
@@ -54,7 +48,11 @@ export default {
 		this.$parent.$parent.camera = this.object;
 	},
 
-	computed: {},
+	computed: {
+		object() {
+			return new THREE.PerspectiveCamera();
+		},
+	},
 
 	watch: {},
 };

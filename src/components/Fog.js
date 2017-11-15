@@ -24,14 +24,6 @@ export default {
 		},
 	},
 
-	data() {
-		return {
-			frozen$fog: Object.freeze({
-				o: new THREE.Fog(),
-			}),
-		};
-	},
-
 	mounted() {
 		this.$parent.object.fog = this.fog;
 	},
@@ -61,7 +53,7 @@ export default {
 
 	computed: {
 		fog() {
-			return this.frozen$fog.o;
+			return new THREE.Fog();
 		},
 	},
 
