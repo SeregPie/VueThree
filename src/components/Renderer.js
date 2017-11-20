@@ -30,9 +30,9 @@ export default {
 							},
 							ref: 'container'
 						},
-						this.$slots.default/*,*/
+						this.$slots.default,
 					),
-				]/*,*/
+				],
 			)
 		);
 	},
