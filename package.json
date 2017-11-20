@@ -1,6 +1,6 @@
 {
 	"name": "vuethree",
-	"version": "17.11.15",
+	"version": "17.11.20",
 	"description": "A Vue wrapper for THREE.",
 	"main": "VueTHREE.js",
 	"scripts": {
@@ -24,9 +24,10 @@
 	"homepage": "https://github.com/SeregPie/VueTHREE#readme",
 	"dependencies": {
 		"three": "^0.87.1",
-		"vue": "^2.5.3"
+		"vue": "^2.5.6"
 	},
 	"devDependencies": {
+		"eslint": "^4.11.0",
 		"rollup": "^0.50.1",
 		"rollup-plugin-buble": "^0.16.0",
 		"rollup-plugin-uglify": "^2.0.1"

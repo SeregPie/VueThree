@@ -127,6 +127,9 @@ export default {
 			frozen$object: Object.freeze({
 				o: this.createObject(),
 			}),
+			frozen$domElement: Object.freeze({
+				o: undefined,
+			}),
 			value: Object.freeze({
 				position: this.position,
 				quaternion: this.quaternion,
@@ -222,6 +225,9 @@ export default {
 	},
 
 	mounted() {
+		this.frozen$domElement = Object.freeze({
+			o: this.$el,
+		});
 		this.startToUpdateControls();
 	},
 
@@ -234,8 +240,12 @@ export default {
 			return this.frozen$object.o;
 		},
 
+		domElement() {
+			return this.frozen$domElement.o;
+		},
+
 		controls() {
-			return new THREE.OrbitControls(this.object, this.$el);
+			return new THREE.OrbitControls(this.object, this.domElement);
 		},
 
 		startToUpdateControls() {
