@@ -14,6 +14,7 @@
 				cameraPosition: defaultCameraPosition,
 				defaultCameraQuaternion: defaultCameraQuaternion,
 				cameraQuaternion: defaultCameraQuaternion,
+				controlsEnabled: true,
 				threePoints: {},
 
 				drawer: true,
@@ -116,7 +117,7 @@
 				watch: {},
 
 				methods: {
-					destroyObject: function(object) {
+					dispose: function(object) {
 						object.geometry.dispose();
 						object.material.dispose();
 					},
@@ -156,7 +157,7 @@
 				watch: {},
 
 				methods: {
-					destroyObject: function(object) {
+					dispose: function(object) {
 						object.geometry.dispose();
 						object.material.dispose();
 					},

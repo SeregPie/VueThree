@@ -68,7 +68,7 @@ export default {
 
 	beforeDestroy() {
 		this.$parent.object.remove(this.object);
-		this.destroyObject(this.object);
+		this.dispose(this.object);
 	},
 
 	computed: {
@@ -86,7 +86,7 @@ export default {
 			handler(newObject, oldObject) {
 				if (oldObject) {
 					this.$parent.object.remove(oldObject);
-					this.destroyObject(oldObject);
+					this.dispose(oldObject);
 				}
 				this.$parent.object.add(newObject);
 			},
@@ -95,6 +95,6 @@ export default {
 	},
 
 	methods: {
-		destroyObject(object) {},
+		dispose(object) {},
 	},
 };

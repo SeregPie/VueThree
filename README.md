@@ -126,7 +126,7 @@ let MySphere = {
 	},
 
 	methods: {
-		destroyObject(object) {
+		dispose(object) {
 			object.geometry.dispose();
 			object.material.dispose();
 		},

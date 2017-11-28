@@ -232,7 +232,7 @@ export default {
 	},
 
 	beforeDestroy() {
-		this.destroyControls(this.controls);
+		this.dispose(this.controls);
 	},
 
 	computed: {
@@ -266,7 +266,7 @@ export default {
 		controls: {
 			handler(newControls, oldControls) {
 				if (oldControls) {
-					this.destroyControls(oldControls);
+					this.dispose(oldControls);
 				}
 			},
 			immediate: true,
@@ -291,12 +291,6 @@ export default {
 	},
 
 	methods: {
-		updateObject() {
-			this.frozen$object = Object.freeze({
-				o: this.createObject(),
-			});
-		},
-
 		createObject() {
 			let object = new THREE.PerspectiveCamera();
 			THREE_Vector3_setFrom(object.position, this.position);
@@ -304,7 +298,13 @@ export default {
 			return object;
 		},
 
-		destroyControls(controls) {
+		updateObject() {
+			this.frozen$object = Object.freeze({
+				o: this.createObject(),
+			});
+		},
+
+		dispose(controls) {
 			controls.dispose();
 		},
 
