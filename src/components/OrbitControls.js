@@ -8,16 +8,7 @@ export default {
 	name: 'VueThreeOrbitControls',
 
 	render(createElement) {
-		return createElement('div', {
-			style: {
-				position: 'absolute',
-				left: 0,
-				right: 0,
-				top: 0,
-				bottom: 0,
-				overflow: 'hidden',
-			},
-		});
+		return createElement('div');
 	},
 
 	props: {
@@ -127,9 +118,6 @@ export default {
 			frozen$object: Object.freeze({
 				o: this.createObject(),
 			}),
-			frozen$domElement: Object.freeze({
-				o: undefined,
-			}),
 			value: Object.freeze({
 				position: this.position,
 				quaternion: this.quaternion,
@@ -225,9 +213,6 @@ export default {
 	},
 
 	mounted() {
-		this.frozen$domElement = Object.freeze({
-			o: this.$el,
-		});
 		this.startToUpdateControls();
 	},
 
@@ -241,7 +226,7 @@ export default {
 		},
 
 		domElement() {
-			return this.frozen$domElement.o;
+			return this.$parent.renderer.domElement;
 		},
 
 		controls() {
