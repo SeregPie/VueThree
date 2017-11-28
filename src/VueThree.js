@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 import Renderer from './components/Renderer';
 import Object3D from './components/Object3D';
 import Scene from './components/Scene';
@@ -7,16 +5,6 @@ import Fog from './components/Fog';
 import PerspectiveCamera from './components/PerspectiveCamera';
 import OrbitControls from './components/OrbitControls';
 import PointLight from './components/PointLight';
-
-if (typeof window !== 'undefined') {
-	Vue.component(Renderer.name, Renderer);
-	Vue.component(Object3D.name, Object3D);
-	Vue.component(Scene.name, Scene);
-	Vue.component(Fog.name, Fog);
-	Vue.component(PerspectiveCamera.name, PerspectiveCamera);
-	Vue.component(OrbitControls.name, OrbitControls);
-	Vue.component(PointLight.name, PointLight);
-}
 
 export default {
 	Renderer,
@@ -27,3 +15,13 @@ export default {
 	OrbitControls,
 	PointLight,
 };
+
+if (typeof window !== 'undefined' && window.Vue) {
+	window.Vue.component(Renderer.name, Renderer);
+	window.Vue.component(Object3D.name, Object3D);
+	window.Vue.component(Scene.name, Scene);
+	window.Vue.component(Fog.name, Fog);
+	window.Vue.component(PerspectiveCamera.name, PerspectiveCamera);
+	window.Vue.component(OrbitControls.name, OrbitControls);
+	window.Vue.component(PointLight.name, PointLight);
+}

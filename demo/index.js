@@ -74,8 +74,8 @@
 
 		components: {
 			mySphereHelper: {
-				mixins: [VueTHREE.Object3D],
-				render: VueTHREE.Object3D.render,
+				mixins: [VueThree.Object3D],
+				render: VueThree.Object3D.render,
 
 				props: {
 					color: {},
@@ -124,8 +124,8 @@
 			},
 
 			myPoint: {
-				mixins: [VueTHREE.Object3D],
-				render: VueTHREE.Object3D.render,
+				mixins: [VueThree.Object3D],
+				render: VueThree.Object3D.render,
 
 				props: {
 					color: {},

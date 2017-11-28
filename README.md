@@ -1,4 +1,4 @@
-# VueTHREE
+# VueThree
 
 *in the early development stage*
 
@@ -11,7 +11,7 @@ A Vue wrapper for THREE.
 
 ## setup
 
-Install the [package](https://www.npmjs.com/package/vuethree) via npm.
+### NPM
 
 ```sh
 
@@ -19,9 +19,25 @@ npm install vuethree
 
 ```
 
----
+### ES2015
 
-Include the code in your page via a CDN.
+Register the components in the scope of another instance.
+
+```js
+
+import {Renderer: VueThreeRenderer, Scene: VueThreeScene} from 'vuethree';
+
+export default {
+	// ...
+	components: {
+		VueThreeRenderer,
+		VueThreeScene,
+	},
+};
+
+```
+
+### Browser
 
 ```html
 
@@ -31,6 +47,8 @@ Include the code in your page via a CDN.
 <script src="https://unpkg.com/vuethree"></script>
 
 ```
+
+If Vue is detected, the components will be registered automatically.
 
 Include [polyfills](https://polyfill.io/) to support older browsers.
 
@@ -79,8 +97,8 @@ Create custom THREE components.
 ```js
 
 let MySphere = {
-	mixins: [VueTHREE.Object3D],
-	render: VueTHREE.Object3D.render,
+	mixins: [VueThree.Object3D],
+	render: VueThree.Object3D.render,
 
 	props: {
 		color: {},

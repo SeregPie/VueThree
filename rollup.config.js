@@ -2,17 +2,16 @@ import buble from 'rollup-plugin-buble';
 import uglify from 'rollup-plugin-uglify';
 
 let globals = {
-	'vue': 'Vue',
 	'three': 'THREE',
 };
 
 export default {
-	input: 'src/VueTHREE.js',
+	input: 'src/VueThree.js',
 	external: Object.keys(globals),
 	output: {
-		file: 'VueTHREE.js',
+		file: 'VueThree.js',
 		format: 'umd',
-		name: 'VueTHREE',
+		name: 'VueThree',
 		globals,
 	},
 	plugins: [
