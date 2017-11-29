@@ -225,12 +225,12 @@ export default {
 			return this.frozen$object.o;
 		},
 
-		domElement() {
-			return this.$parent.renderer.domElement;
+		renderer() {
+			return this.$parent.renderer;
 		},
 
 		controls() {
-			return new THREE.OrbitControls(this.object, this.domElement);
+			return new THREE.OrbitControls(this.object, this.renderer.domElement);
 		},
 
 		startToUpdateControls() {
@@ -258,14 +258,14 @@ export default {
 		},
 
 		position(position) {
-			if (position !== this.value.position) {
-				this.updateObject();
+			if (this.value.position !== position) {
+				this.setObject();
 			}
 		},
 
 		quaternion(quaternion) {
-			if (quaternion !== this.value.quaternion) {
-				this.updateObject();
+			if (this.value.quaternion !== quaternion) {
+				this.setObject();
 			}
 		},
 
@@ -283,7 +283,7 @@ export default {
 			return object;
 		},
 
-		updateObject() {
+		setObject() {
 			this.frozen$object = Object.freeze({
 				o: this.createObject(),
 			});
