@@ -4,7 +4,7 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 		<title>VueThree</title>
-		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Array.prototype.@@iterator,Array.prototype.find,Array.prototype.includes,Number.isFinite,Object.entries"></script>
+		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Array.prototype.@@iterator,Array.prototype.find,Array.prototype.includes,Object.entries,Object.values"></script>
 		<style>
 			[v-cloak] {
 				display: none;
@@ -21,34 +21,7 @@
 	</head>
 	<body>
 		<v-app id="App" v-cloak>
-			<v-navigation-drawer fixed clipped app v-model="drawer">
-				<div class="ma-3">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-				</div>
-				<div class="ma-3">
-					<v-btn
-						block
-						color="primary"
-						@click="resetCamera"
-					>
-						reset camera
-					</v-btn>
-				</div>
-				<div class="ma-3">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-				</div>
-				<div class="ma-3">
-					<v-btn
-						block
-						color="primary"
-						@click="redrawPoints"
-					>
-						redraw points
-					</v-btn>
-				</div>
-			</v-navigation-drawer>
 			<v-toolbar color="amber darken-3" dark fixed clipped-left app>
-				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
 				<v-toolbar-title>VueThree</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon href="https://github.com/SeregPie/VueThree" target="_blank">
@@ -56,45 +29,59 @@
 				</v-btn>
 			</v-toolbar>
 			<v-content>
-				<v-container fluid fill-height>
-					<vue-three-renderer :clear-color="backgroundColor">
-						<vue-three-scene>
-							<vue-three-fog
-								:color="backgroundColor"
-								:near="1/24"
-								:far="4"
-							></vue-three-fog>
-							<vue-three-perspective-camera
-								:near="1/64"
-								:far="4"
-								:position="cameraPosition"
-								:quaternion="cameraQuaternion"
-							></vue-three-perspective-camera>
-							<component
-								v-for="({component, props}, key) in threeObjects"
-								:key="key"
-								:is="component"
-								v-bind="props"
-							></component>
-							<vue-three-point-light
-								:distance="4"
-								:decay="2"
-								:position="lightPosition"
-							></vue-three-point-light>
-						</vue-three-scene>
-						<vue-three-orbit-controls
-							:max-distance="4"
-							:enable-damping="true"
-							:damping-factor="1/12"
-							:rotate-speed="1/6"
-							:zoom-speed="1"
-							:key-pan-speed="1/2"
-							:enable-keys="false"
-							:position.sync="cameraPosition"
-							:quaternion.sync="cameraQuaternion"
-						></vue-three-orbit-controls>
-					</vue-three-renderer>
-				</v-container>
+				<vue-three-renderer :clear-color="backgroundColor">
+					<vue-three-scene>
+						<vue-three-fog
+							:color="backgroundColor"
+							:near="1/24"
+							:far="4"
+						></vue-three-fog>
+						<vue-three-perspective-camera
+							:near="1/64"
+							:far="4"
+							:position="cameraPosition"
+							:quaternion="cameraQuaternion"
+						></vue-three-perspective-camera>
+						<component
+							v-for="({component, props}, key) in threeObjects"
+							:key="key"
+							:is="component"
+							v-bind="props"
+						></component>
+						<vue-three-point-light
+							:distance="4"
+							:decay="2"
+							:position="lightPosition"
+						></vue-three-point-light>
+					</vue-three-scene>
+					<vue-three-orbit-controls
+						:max-distance="4"
+						:enable-damping="true"
+						:damping-factor="1/12"
+						:rotate-speed="1/6"
+						:zoom-speed="1"
+						:key-pan-speed="1/2"
+						:enable-keys="false"
+						:position.sync="cameraPosition"
+						:quaternion.sync="cameraQuaternion"
+						:enabled="controlsEnabled"
+					></vue-three-orbit-controls>
+				</vue-three-renderer>
+				<v-tooltip left>
+					<v-btn
+						slot="activator"
+						fab
+						fixed
+						right
+						bottom
+						color="amber"
+						dark
+						@click="resetCamera"
+					>
+						<v-icon>explore</v-icon>
+					</v-btn>
+					<span>reset camera</span>
+				</v-tooltip>
 			</v-content>
 		</v-app>
 		<script src="demo/index.js"></script>

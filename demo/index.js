@@ -3,7 +3,7 @@
 	new Vue({
 		el: '#App',
 
-		data() {
+		data: function() {
 			var defaultCameraPosition = [0, 0, 5/2];
 			var defaultCameraQuaternion = [0, 0, 0, 1];
 
@@ -15,17 +15,25 @@
 				defaultCameraQuaternion: defaultCameraQuaternion,
 				cameraQuaternion: defaultCameraQuaternion,
 				controlsEnabled: true,
-				threePoints: {},
-
-				drawer: true,
 			};
 		},
 
-		created() {
-			this.redrawPoints();
-		},
-
 		computed: {
+			points: function() {
+				var returns = [];
+				for (var i = 0; i < 100; ++i) {
+					var point = {
+						position: (new THREE.Vector3(Math.random(), Math.random(), Math.random()))
+							.subScalar(1/2)
+							.setLength(Math.random())
+							.toArray(),
+						scale: 1/200 + Math.random() * 1/200,
+					};
+					returns.push(point);
+				}
+				return returns;
+			},
+
 			threeSphereHelper: function() {
 				return {
 					component: 'mySphereHelper',
@@ -35,15 +43,41 @@
 				};
 			},
 
-			threeObjects: function() {
+			threePoints: function() {
+				var points = this.points;
+
 				var returns = {};
-				if (this.threeSphereHelper) {
-					returns['threeSphereHelper'] = this.threeSphereHelper;
+				points.forEach(function(point, pointIndex) {
+					var threePointKey = ''+pointIndex;
+					var threePoint = {
+						component: 'myPoint',
+						props: {
+							color: '#a0a0a0',
+							position: point.position,
+							scale: point.scale,
+							userData: {
+								name: 'point',
+								pointIndex: pointIndex,
+							},
+						},
+					};
+					returns[threePointKey] = threePoint;
+				});
+				return returns;
+			},
+
+			threeObjects: function() {
+				var threeSphereHelper = this.threeSphereHelper;
+				var threePoints = this.threePoints;
+
+				var returns = {};
+				if (threeSphereHelper) {
+					returns['sphereHelper'] = threeSphereHelper;
 				}
-				Object.entries(this.threePoints).forEach(function(entry) {
+				Object.entries(threePoints).forEach(function(entry) {
 					var key = entry[0];
 					var object = entry[1];
-					returns['threePoint'+'.'+key] = object;
+					returns['point'+'.'+key] = object;
 				});
 				return returns;
 			},
@@ -53,23 +87,6 @@
 			resetCamera: function() {
 				this.cameraPosition = this.defaultCameraPosition;
 				this.cameraQuaternion = this.defaultCameraQuaternion;
-			},
-
-			redrawPoints: function() {
-				var threePoints = {};
-				for (var i = 0; i < 100; ++i) {
-					threePoints[Math.random()] = {
-						component: 'myPoint',
-						props: {
-							color: '#a0a0a0',
-							position: (new THREE.Vector3(Math.random(), Math.random(), Math.random()))
-								.subScalar(1/2)
-								.setLength(Math.random()),
-							scale: 1/100,
-						},
-					};
-				}
-				this.threePoints = threePoints;
 			},
 		},
 
