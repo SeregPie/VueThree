@@ -25,17 +25,30 @@ npm install vuethree
 
 ### ES2015
 
+Register the components globally.
+
+```js
+
+import Vue from 'vue';
+import VueThree from 'vuethree';
+
+Vue.use(VueThree);
+
+```
+
+*or*
+
 Register the components in the scope of another instance.
 
 ```js
 
-import {Renderer: VueThreeRenderer, Scene: VueThreeScene} from 'vuethree';
+import {Renderer, Scene} from 'vuethree';
 
 export default {
 	// ...
 	components: {
-		VueThreeRenderer,
-		VueThreeScene,
+		[Renderer.name]: Renderer,
+		[Scene.name]: Scene,
 	},
 };
 
@@ -58,7 +71,7 @@ Include [polyfills](https://polyfill.io/) to support older browsers.
 
 ```html
 
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Object.entries"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Object.entries,Object.values"></script>
 
 ```
 
