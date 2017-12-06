@@ -4,6 +4,7 @@ import Scene from './components/Scene';
 import Fog from './components/Fog';
 import PerspectiveCamera from './components/PerspectiveCamera';
 import OrbitControls from './components/OrbitControls';
+import Interactions from './components/Interactions';
 import PointLight from './components/PointLight';
 
 let components = {
@@ -13,6 +14,7 @@ let components = {
 	Fog,
 	PerspectiveCamera,
 	OrbitControls,
+	Interactions,
 	PointLight,
 };
 
