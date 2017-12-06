@@ -12,13 +12,13 @@ export default {
 	},
 
 	props: {
-		position: {
+		cameraPosition: {
 			type: [Object, Array],
 			default() {
 				return [0, 0, 0];
 			},
 		},
-		quaternion: {
+		cameraQuaternion: {
 			type: [Object, Array],
 			default() {
 				return [0, 0, 0, 1];
@@ -119,8 +119,8 @@ export default {
 				o: this.createObject(),
 			}),
 			value: Object.freeze({
-				position: this.position,
-				quaternion: this.quaternion,
+				cameraPosition: this.cameraPosition,
+				cameraQuaternion: this.cameraQuaternion,
 			}),
 		};
 	},
@@ -248,6 +248,18 @@ export default {
 	},
 
 	watch: {
+		cameraPosition(value) {
+			if (this.value.cameraPosition !== value) {
+				this.setObject();
+			}
+		},
+
+		cameraQuaternion(value) {
+			if (this.value.cameraQuaternion !== value) {
+				this.setObject();
+			}
+		},
+
 		controls: {
 			handler(newControls, oldControls) {
 				if (oldControls) {
@@ -257,29 +269,17 @@ export default {
 			immediate: true,
 		},
 
-		position(position) {
-			if (this.value.position !== position) {
-				this.setObject();
-			}
-		},
-
-		quaternion(quaternion) {
-			if (this.value.quaternion !== quaternion) {
-				this.setObject();
-			}
-		},
-
-		value({position, quaternion}) {
-			this.$emit('update:position', position);
-			this.$emit('update:quaternion', quaternion);
+		value({cameraPosition, cameraQuaternion}) {
+			this.$emit('update:cameraPosition', cameraPosition);
+			this.$emit('update:cameraQuaternion', cameraQuaternion);
 		},
 	},
 
 	methods: {
 		createObject() {
 			let object = new THREE.PerspectiveCamera();
-			THREE_Vector3_setFrom(object.position, this.position);
-			THREE_Quaternion_setFrom(object.quaternion, this.quaternion);
+			THREE_Vector3_setFrom(object.position, this.cameraPosition);
+			THREE_Quaternion_setFrom(object.quaternion, this.cameraQuaternion);
 			return object;
 		},
 
@@ -296,8 +296,8 @@ export default {
 		updateControls() {
 			this.controls.update();
 			this.value = Object.freeze({
-				position: this.object.position.toArray(),
-				quaternion: this.object.quaternion.toArray(),
+				cameraPosition: this.object.position.toArray(),
+				cameraQuaternion: this.object.quaternion.toArray(),
 			});
 		},
 	},

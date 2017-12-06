@@ -99,8 +99,8 @@ Include [polyfills](https://polyfill.io/) to support older browsers.
 		></vue-three-point-light>
 	</vue-three-scene>
 	<vue-three-orbit-controls
-		:position.sync="cameraPosition"
-		:quaternion.sync="cameraQuaternion"
+		:camera-position.sync="cameraPosition"
+		:camera-quaternion.sync="cameraQuaternion"
 		auto-rotate
 	></vue-three-orbit-controls>
 </vue-three-renderer>
@@ -214,8 +214,8 @@ let MySphere = {
 
 | property | type | default |
 | ---: | :--- | :--- |
-| `position` | `[Object, Array]` | `[0, 0, 0]` |
-| `quaternion` | `[Object, Array]` | `[0, 0, 0, 1]` |
+| `cameraPosition` | `[Object, Array]` | `[0, 0, 0]` |
+| `cameraQuaternion` | `[Object, Array]` | `[0, 0, 0, 1]` |
 | `enabled` | `Boolean` | `true` |
 | `minDistance` | `Number` | `0` |
 | `maxDistance` | `Number` | `Infinity` |
