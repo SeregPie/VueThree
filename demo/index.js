@@ -26,6 +26,7 @@
 				}
 				return returns;
 			})(),
+			selectedPoints: {},
 		},
 
 		computed: {
@@ -40,7 +41,7 @@
 
 			threePoints: function() {
 				var points = this.points;
-				var selectedPoints = [];
+				var selectedPoints = this.selectedPoints;
 
 				var returns = {};
 				points.forEach(function(point, pointIndex) {
@@ -87,21 +88,13 @@
 				this.cameraQuaternion = defaultCameraQuaternion;
 			},
 
-			removePoint: function(pointIndex) {
-				this.points.splice(pointIndex, 1);
-			},
-
-			setPointPosition: function(pointIndex, position) {
-				this.points[pointIndex].position = position;
-			},
-
 			isThreePoint: function(object) {
 				return object.userData.type === 'point';
 			},
 
 			onThreePointPress: function(object) {
 				var pointIndex = object.userData.index;
-				this.removePoint(pointIndex);
+				this.points.splice(pointIndex, 1);
 			},
 
 			onThreePointDragStart: function() {
@@ -110,11 +103,21 @@
 
 			onThreePointDrag: function(object, position) {
 				var pointIndex = object.userData.index;
-				this.setPointPosition(pointIndex, position);
+				this.points[pointIndex].position = position;
 			},
 
 			onThreePointDragEnd: function() {
 				this.controlsEnabled = true;
+			},
+
+			onThreePointHoverIn: function(object) {
+				var pointIndex = object.userData.index;
+				Vue.set(this.selectedPoints, pointIndex, true);
+			},
+
+			onThreePointHoverOut: function(object) {
+				var pointIndex = object.userData.index;
+				Vue.delete(this.selectedPoints, pointIndex);
 			},
 		},
 
