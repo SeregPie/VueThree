@@ -56,8 +56,12 @@
 					</vue-three-scene>
 					<vue-three-interactions
 						:press="{objectFilter: isThreePoint, onPress: onThreePointPress}"
+						:drag="{objectFilter: isThreePoint, onDragStart: onThreePointDragStart, onDrag: onThreePointDrag, onDragEnd: onThreePointDragEnd}"
 					></vue-three-interactions>
 					<vue-three-orbit-controls
+						v-if="controlsEnabled"
+						:camera-position.sync="cameraPosition"
+						:camera-quaternion.sync="cameraQuaternion"
 						:max-distance="4"
 						:enable-damping="true"
 						:damping-factor="1/12"
@@ -65,9 +69,6 @@
 						:zoom-speed="1"
 						:key-pan-speed="1/2"
 						:enable-keys="false"
-						:position.sync="cameraPosition"
-						:quaternion.sync="cameraQuaternion"
-						:enabled="controlsEnabled"
 					></vue-three-orbit-controls>
 				</vue-three-renderer>
 				<v-tooltip left>

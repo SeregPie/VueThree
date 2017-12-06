@@ -91,6 +91,10 @@
 				this.points.splice(pointIndex, 1);
 			},
 
+			setPointPosition: function(pointIndex, position) {
+				this.points[pointIndex].position = position;
+			},
+
 			isThreePoint: function(object) {
 				return object.userData.type === 'point';
 			},
@@ -98,6 +102,19 @@
 			onThreePointPress: function(object) {
 				var pointIndex = object.userData.index;
 				this.removePoint(pointIndex);
+			},
+
+			onThreePointDragStart: function() {
+				this.controlsEnabled = false;
+			},
+
+			onThreePointDrag: function(object, position) {
+				var pointIndex = object.userData.index;
+				this.setPointPosition(pointIndex, position);
+			},
+
+			onThreePointDragEnd: function() {
+				this.controlsEnabled = true;
 			},
 		},
 
