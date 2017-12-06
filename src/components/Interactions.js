@@ -2,33 +2,8 @@ import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
 import Function_stubFalse from '../helpers/Function/stubFalse';
-import Function_stubNull from '../helpers/Function/stubNull';
 
 import getPercentageRelativePositionToElement from '../members/getPercentageRelativePositionToElement';
-
-let touchStartEventListener = function(event) {
-	this.currentStrategy = this.strategy.onTouchStart.call(this, event);
-};
-
-let touchMoveEventListener = function(event) {
-	this.currentStrategy = this.strategy.onTouchMove.call(this, event);
-};
-
-let touchEndEventListener = function(event) {
-	this.currentStrategy = this.strategy.onTouchEnd.call(this, event);
-};
-
-let mouseMoveEventListener = function(event) {
-	this.currentStrategy = this.strategy.onMouseMove.call(this, event);
-};
-
-let mouseDownEventListener = function(event) {
-	this.currentStrategy = this.strategy.onMouseDown.call(this, event);
-};
-
-let mouseUpEventListener = function(event) {
-	this.currentStrategy = this.strategy.onMouseUp.call(this, event);
-};
 
 export default {
 	name: 'VueThreeInteractions',
@@ -38,17 +13,8 @@ export default {
 	},
 
 	props: {
-		press: {
-			type: Object,
-			default() {
-				return {
-					distanceTolerance: 1,
-					delay: 200, // touch only
-					objectFilter: Function_stubFalse,
-					onPress: Function_noop,
-				};
-			},
-		},
+		press: Object,
+		drag: Object,
 	},
 
 	data() {
@@ -64,6 +30,7 @@ export default {
 		window.addEventListener('mousemove', this.mouseMoveEventListener);
 		window.addEventListener('mousedown', this.mouseDownEventListener);
 		window.addEventListener('mouseup', this.mouseUpEventListener);
+		this.startTicking();
 	},
 
 	beforeDestroy() {
@@ -77,27 +44,27 @@ export default {
 
 	computed: {
 		touchStartEventListener() {
-			return touchStartEventListener.bind(this);
+			return this.onTouchStart.bind(this);
 		},
 
 		touchMoveEventListener() {
-			return touchMoveEventListener.bind(this);
+			return this.onTouchMove.bind(this);
 		},
 
 		touchEndEventListener() {
-			return touchEndEventListener.bind(this);
+			return this.onTouchEnd.bind(this);
 		},
 
 		mouseMoveEventListener() {
-			return mouseMoveEventListener.bind(this);
+			return this.onMouseMove.bind(this);
 		},
 
 		mouseDownEventListener() {
-			return mouseDownEventListener.bind(this);
+			return this.onMouseDown.bind(this);
 		},
 
 		mouseUpEventListener() {
-			return mouseUpEventListener.bind(this);
+			return this.onMouseUp.bind(this);
 		},
 
 		renderer() {
@@ -117,20 +84,91 @@ export default {
 				render(createElement) {
 					return createElement('div');
 				},
-				onTouchStart: Function_stubNull,
-				onTouchMove: Function_stubNull,
-				onTouchEnd: Function_stubNull,
-				onMouseMove: Function_stubNull,
-				onMouseDown: Function_stubNull,
-				onMouseUp: Function_stubNull,
+				onTouchStart: Function_stubFalse,
+				onTouchMove: Function_stubFalse,
+				onTouchEnd: Function_stubFalse,
+				onMouseMove: Function_stubFalse,
+				onMouseDown: Function_stubFalse,
+				onMouseUp: Function_stubFalse,
+				onTick: Function_noop,
+				onEnd: Function_noop,
+				//controlsEnabled: true,
 			}, this.currentStrategy || this.initialStrategy);
 		},
 
 		initialStrategy() {
 			let press = this.press;
+			let drag = this.drag;
 
 			if (press) {
-				press = Object.assign(this.$options.props.press.default(), press);
+				press = Object.assign({
+					distanceTolerance: 1,
+					delay: 100, // touch only
+					objectFilter: Function_stubFalse,
+					onPress: Function_noop,
+				}, press);
+			}
+			if (drag) {
+				drag = Object.assign({
+					distanceTolerance: 1,
+					delay: 100,
+					objectsFilter: Function_stubFalse,
+					onDragStart: Function_noop,
+					onDrag: Function_noop,
+					onDragEnd: Function_noop,
+				}, drag);
+			}
+			if (drag) {
+				return {
+					onMouseDown(event) {
+						let element = this.renderer.domElement;
+						if (event.which === 1 && event.target === element) {
+							let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+							let [object] = this.intersectPoint(startPointerPosition, drag.objectFilter);
+							if (object) {
+								let startThreePosition = object.position.clone();
+								let startTime = Date.now();
+								return {
+									onMouseMove(event) {
+										let currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+										if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
+											return false;
+										}
+									},
+
+									onTick() {
+										let currentTime = Date.now();
+										if (currentTime - startTime > drag.delay) {
+											return {
+												onMouseMove(event) {
+													let currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+													let currentThreePosition = this.intersectPlane(startThreePosition, currentPointerPosition);
+													drag.onDragStart(object, currentPointerPosition.toArray());
+													drag.onDrag(object, currentThreePosition.toArray(), currentPointerPosition.toArray());
+													return {
+														onMouseMove(event) {
+															let currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+															let currentThreePosition = this.intersectPlane(startThreePosition, currentPointerPosition);
+															drag.onDrag(object, currentThreePosition.toArray(), currentPointerPosition.toArray());
+														},
+
+														onEnd() {
+															drag.onDragEnd(object);
+														},
+
+														//controlsEnabled: false,
+													};
+												},
+
+												//controlsEnabled: false,
+											};
+										}
+									},
+								};
+							}
+						}
+					},
+				};
 			}
 			if (press) {
 				return {
@@ -138,24 +176,24 @@ export default {
 						let element = this.renderer.domElement;
 						if (event.which === 1 && event.target === element) {
 							let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-							let [intersectedObject] = this.intersectPoint(startPointerPosition, press.objectFilter);
-							if (intersectedObject) {
+							let [object] = this.intersectPoint(startPointerPosition, press.objectFilter);
+							if (object) {
 								let currentPointerPosition = startPointerPosition;
 								return {
 									onMouseMove(event) {
 										currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
 										if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
-											return null;
+											return false;
 										}
 									},
 
 									onMouseUp(event) {
 										if (event.which === 1) {
-											if (this.intersectObject(currentPointerPosition, intersectedObject)) {
-												press.onPress(intersectedObject);
+											if (this.intersectObject(currentPointerPosition, object)) {
+												press.onPress(object, currentPointerPosition.toArray());
 											}
 										}
-										return null;
+										return false;
 									},
 								};
 							}
@@ -166,7 +204,61 @@ export default {
 		},
 	},
 
+	watch: {
+		strategy(newStrategy, oldStrategy) {
+			if (oldStrategy) {
+				oldStrategy.onEnd.call(this);
+			}
+		},
+	},
+
 	methods: {
+		onTouchStart(event) {
+			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
+		},
+
+		onTouchMove(event) {
+			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
+		},
+
+		onTouchEnd(event) {
+			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
+		},
+
+		onMouseMove(event) {
+			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
+		},
+
+		onMouseDown(event) {
+			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
+		},
+
+		onMouseUp(event) {
+			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
+		},
+
+		onTick() {
+			this.setNextStrategy(this.strategy.onTick.call(this));
+		},
+
+		startTicking() {
+			if (!this._isDestroyed) {
+				requestAnimationFrame(() => {
+					this.startTicking();
+				});
+				this.onTick();
+			}
+		},
+
+		setNextStrategy(value) {
+			if (value === false) {
+				this.currentStrategy = null;
+			} else
+			if (value) {
+				this.currentStrategy = value;
+			}
+		},
+
 		createRaycaster(pointerPosition) {
 			let position = getPercentageRelativePositionToElement(pointerPosition, this.renderer.domElement);
 			let x = position.x * 2 - 1;
@@ -191,6 +283,13 @@ export default {
 			let raycaster = this.createRaycaster(pointerPosition);
 			let intersects = raycaster.intersectObject(object);
 			return !!intersects.length;
+		},
+
+		intersectPlane(originalThreePosition, pointerPosition) {
+			let raycaster = this.createRaycaster(pointerPosition);
+			let plane = new THREE.Plane();
+			plane.setFromNormalAndCoplanarPoint(this.camera.getWorldDirection(plane.normal), originalThreePosition);
+			return raycaster.ray.intersectPlane(plane);
 		},
 	},
 };
