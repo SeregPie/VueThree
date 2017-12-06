@@ -16,8 +16,8 @@
 		<script src="VueThree.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"/>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/0.17.3/vuetify.min.css"/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/0.17.3/vuetify.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.1/vuetify.min.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.1/vuetify.min.js"></script>
 	</head>
 	<body>
 		<v-app id="App" v-cloak>
@@ -54,6 +54,9 @@
 							:position="lightPosition"
 						></vue-three-point-light>
 					</vue-three-scene>
+					<vue-three-interactions
+						:press="{objectFilter: isThreePoint, onPress: onThreePointPress}"
+					></vue-three-interactions>
 					<vue-three-orbit-controls
 						:max-distance="4"
 						:enable-damping="true"

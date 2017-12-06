@@ -1,25 +1,18 @@
 (function() {
 
+	var defaultCameraPosition = [0, 0, 5/2];
+	var defaultCameraQuaternion = [0, 0, 0, 1];
+
 	new Vue({
 		el: '#App',
 
-		data: function() {
-			var defaultCameraPosition = [0, 0, 5/2];
-			var defaultCameraQuaternion = [0, 0, 0, 1];
-
-			return {
-				backgroundColor: '#1a3041',
-				lightPosition: [1, 1, 1],
-				defaultCameraPosition: defaultCameraPosition,
-				cameraPosition: defaultCameraPosition,
-				defaultCameraQuaternion: defaultCameraQuaternion,
-				cameraQuaternion: defaultCameraQuaternion,
-				controlsEnabled: true,
-			};
-		},
-
-		computed: {
-			points: function() {
+		data: {
+			backgroundColor: '#1a3041',
+			lightPosition: [1, 1, 1],
+			cameraPosition: defaultCameraPosition,
+			cameraQuaternion: defaultCameraQuaternion,
+			controlsEnabled: true,
+			points: (function() {
 				var returns = [];
 				for (var i = 0; i < 100; ++i) {
 					var point = {
@@ -27,13 +20,15 @@
 							.subScalar(1/2)
 							.setLength(Math.random())
 							.toArray(),
-						scale: 1/200 + Math.random() * 1/200,
+						scale: 1/100 + Math.random() * 3/100,
 					};
 					returns.push(point);
 				}
 				return returns;
-			},
+			})(),
+		},
 
+		computed: {
 			threeSphereHelper: function() {
 				return {
 					component: 'mySphereHelper',
@@ -45,19 +40,22 @@
 
 			threePoints: function() {
 				var points = this.points;
+				var selectedPoints = [];
 
 				var returns = {};
 				points.forEach(function(point, pointIndex) {
 					var threePointKey = ''+pointIndex;
+					var pointSelected = !!selectedPoints[pointIndex];
+					var threePointColor = pointSelected ? '#ff0000' : '#a0a0a0';
 					var threePoint = {
 						component: 'myPoint',
 						props: {
-							color: '#a0a0a0',
+							color: threePointColor,
 							position: point.position,
 							scale: point.scale,
 							userData: {
-								name: 'point',
-								pointIndex: pointIndex,
+								type: 'point',
+								index: pointIndex,
 							},
 						},
 					};
@@ -85,8 +83,21 @@
 
 		methods: {
 			resetCamera: function() {
-				this.cameraPosition = this.defaultCameraPosition;
-				this.cameraQuaternion = this.defaultCameraQuaternion;
+				this.cameraPosition = defaultCameraPosition;
+				this.cameraQuaternion = defaultCameraQuaternion;
+			},
+
+			removePoint: function(pointIndex) {
+				this.points.splice(pointIndex, 1);
+			},
+
+			isThreePoint: function(object) {
+				return object.userData.type === 'point';
+			},
+
+			onThreePointPress: function(object) {
+				var pointIndex = object.userData.index;
+				this.removePoint(pointIndex);
 			},
 		},
 
