@@ -207,7 +207,16 @@ export default {
 											if (currentTime - startTime > select.delay) {
 												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
 												previousIntersect = currentTime;
-												selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+												switch (select.shape) {
+													case 'rectangle': {
+														selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+														break;
+													}
+													case 'ellipse': {
+														selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+														break;
+													}
+												}
 												previousSelectedObjects = [];
 												selectedObjectsIn = selectedObjects;
 												selectedObjectsOut = previousSelectedObjects;
@@ -219,39 +228,29 @@ export default {
 														let endPosition = getPercentageRelativePositionToElement(currentPointerPosition, domElement);
 														let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
 														let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
-														return (
-															createElement(
-																'div',
-																{
-																	style: {
-																		position: 'absolute',
-																		left: 0,
-																		right: 0,
-																		top: 0,
-																		bottom: 0,
-																		overflow: 'hidden',
-																	},
-																},
-																[
-																	createElement(
-																		'div',
-																		{
-																			style: {
-																				boxSizing: 'border-box',
-																				position: 'absolute',
-																				left: `${areaPosition.x * 100}%`,
-																				top: `${areaPosition.y * 100}%`,
-																				width: `${areaSize.x * 100}%`,
-																				height: `${areaSize.y * 100}%`,
-																				borderWidth: select.borderWidth,
-																				borderColor: select.borderColor,
-																				backgroundColor: select.backgroundColor,
-																			},
-																		},
-																	),
-																],
-															)
-														);
+														let areaStyle = {
+															backgroundColor: select.backgroundColor,
+															border: `${select.borderWidth}px solid ${select.borderColor}`,
+															boxSizing: 'border-box',
+															height: `${areaSize.y * 100}%`,
+															left: `${areaPosition.x * 100}%`,
+															position: 'absolute',
+															top: `${areaPosition.y * 100}%`,
+															width: `${areaSize.x * 100}%`,
+														};
+														if (select.shape === 'ellipse') {
+															areaStyle.borderRadius = '100%';
+														}
+														return createElement('div', {
+															style: {
+																bottom: 0,
+																left: 0,
+																overflow: 'hidden',
+																position: 'absolute',
+																right: 0,
+																top: 0,
+															},
+														}, [createElement('div', {style: areaStyle})]);
 													},
 													onMouseMove(event) {
 														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
@@ -262,7 +261,16 @@ export default {
 														if (currentTime - previousIntersect > select.interval) {
 															previousIntersect = currentTime;
 															previousSelectedObjects = selectedObjects;
-															selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+															switch (select.shape) {
+																case 'rectangle': {
+																	selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+																	break;
+																}
+																case 'ellipse': {
+																	selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+																	break;
+																}
+															}
 															selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
 															selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
 															if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
@@ -482,7 +490,7 @@ export default {
 			});
 		},
 
-		intersectEllipse(startPointerPosition, endPointerPosition) {
+		intersectEllipse(startPointerPosition, endPointerPosition, objectFilter) {
 			return this.intersectRectangle(startPointerPosition, endPointerPosition, objectFilter);
 		},
 	},
