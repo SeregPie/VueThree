@@ -58,6 +58,7 @@
 						:press="{objectFilter: isThreePoint, onPress: onThreePointPress}"
 						:drag="{objectFilter: isThreePoint, onDragStart: onThreePointDragStart, onDrag: onThreePointDrag, onDragEnd: onThreePointDragEnd}"
 						:hover="{objectFilter: isThreePoint, onHoverIn: onThreePointHoverIn, onHoverOut: onThreePointHoverOut}"
+						:select="{objectFilter: isThreePoint, onSelectStart: onThreePointsSelectStart, onSelect: onThreePointsSelect, onSelectEnd: onThreePointsSelectEnd}"
 					></vue-three-interactions>
 					<vue-three-orbit-controls
 						v-if="controlsEnabled"

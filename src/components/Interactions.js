@@ -1,5 +1,6 @@
 import THREE from 'three';
 
+import Array_difference from '../helpers/Array/difference';
 import Function_noop from '../helpers/Function/noop';
 import Function_stubFalse from '../helpers/Function/stubFalse';
 
@@ -9,6 +10,7 @@ export default {
 	name: 'VueThreeInteractions',
 
 	render(createElement) {
+		let renderClock = this.renderClock;
 		return this.strategy.render(createElement);
 	},
 
@@ -16,11 +18,13 @@ export default {
 		hover: Object,
 		press: Object,
 		drag: Object,
+		select: Object,
 	},
 
 	data() {
 		return {
 			currentStrategy: null,
+			renderClock: null,
 		};
 	},
 
@@ -98,25 +102,129 @@ export default {
 		},
 
 		initialStrategy() {
-			let element = this.renderer.domElement;
+			let domElement = this.renderer.domElement;
 			let hover = this.hover;
 			let press = this.press;
 			let drag = this.drag;
+			let select = this.select;
 
-			if (hover) {
-				hover = Object.assign({
+			if (select) {
+				select = Object.assign({
+					shape: 'rectangle', // ellipse
 					distanceTolerance: 1,
-					delay: 100, // mouse only
+					delay: 100,
 					objectsFilter: Function_stubFalse,
-					interval: 200, // mouse only
-					onHoverIn: Function_noop,
-					onHoverOut: Function_noop,
-				}, hover);
+					interval: 1000,
+					borderWidth: 1,
+					borderColor: 'rgba(0,0,0,0.5)',
+					backgroundColor: 'rgba(255,255,255,0.1)',
+					onSelectStart: Function_noop,
+					onSelectIn: Function_noop,
+					onSelectOut: Function_noop,
+					onSelectEnd: Function_noop,
+				}, select);
+				return {
+					onMouseDown(event) {
+						if (event.which === 1 && event.target === domElement) {
+							let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+							let currentPointerPosition = startPointerPosition;
+							let startTime = Date.now();
+							return {
+								onMouseMove(event) {
+									currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+									if (currentPointerPosition.distanceTo(startPointerPosition) > select.distanceTolerance) {
+										return false;
+									}
+								},
+
+								onTick() {
+									let currentTime = Date.now();
+									if (currentTime - startTime > select.delay) {
+										return {
+											onMouseMove(event) {
+												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												let previousIntersect = currentTime;
+												let selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+												let previousSelectedObjects = [];
+												let selectedObjectsIn = selectedObjects;
+												let selectedObjectsOut = previousSelectedObjects;
+												select.onSelectStart(startPointerPosition.toArray(), currentPointerPosition.toArray());
+												select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
+												return {
+													render(createElement) {
+														let startPosition = getPercentageRelativePositionToElement(startPointerPosition, domElement);
+														let endPosition = getPercentageRelativePositionToElement(currentPointerPosition, domElement);
+														let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
+														let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
+														return (
+															createElement(
+																'div',
+																{
+																	style: {
+																		position: 'absolute',
+																		left: 0,
+																		right: 0,
+																		top: 0,
+																		bottom: 0,
+																		overflow: 'hidden',
+																	},
+																},
+																[
+																	createElement(
+																		'div',
+																		{
+																			style: {
+																				boxSizing: 'border-box',
+																				position: 'absolute',
+																				left: `${areaPosition.x * 100}%`,
+																				top: `${areaPosition.y * 100}%`,
+																				width: `${areaSize.x * 100}%`,
+																				height: `${areaSize.y * 100}%`,
+																				borderWidth: select.borderWidth,
+																				borderColor: select.borderColor,
+																				backgroundColor: select.backgroundColor,
+																			},
+																		},
+																	),
+																],
+															)
+														);
+													},
+													onMouseMove(event) {
+														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+														this.rerender();
+													},
+													onTick() {
+														let currentTime = Date.now();
+														if (currentTime - previousIntersect > select.interval) {
+															previousIntersect = currentTime;
+															previousSelectedObjects = selectedObjects;
+															selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+															selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
+															selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
+															if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
+																select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
+															}
+														}
+													},
+													onEnd() {
+														select.onSelectEnd(selectedObjects, startPointerPosition.toArray(), currentPointerPosition.toArray());
+													},
+													//controlsEnabled: false,
+												};
+											},
+										};
+									}
+								},
+							};
+						}
+					},
+				};
 			}
 			if (press || drag) {
 				if (press) {
 					press = Object.assign({
-						distanceTolerance: 1,
+						distanceTolerance: 2,
 						delay: 100, // touch only
 						objectFilter: Function_stubFalse,
 						onPress: Function_noop,
@@ -124,7 +232,7 @@ export default {
 				}
 				if (drag) {
 					drag = Object.assign({
-						distanceTolerance: 1,
+						distanceTolerance: 2,
 						delay: 100,
 						objectsFilter: Function_stubFalse,
 						onDragStart: Function_noop,
@@ -141,91 +249,101 @@ export default {
 				let draggedObjectOriginalPosition;
 				let draggedObjectDragPosition;
 
-				return {
-					onMouseDown(event) {
-						if (event.which === 1 && event.target === element) {
-							startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-							if (press) {
-								([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
-								if (!pressedObject) {
-									press = false;
-								}
-							}
-							if (drag) {
-								([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
-								if (draggedObject) {
-									draggedObjectOriginalPosition = draggedObject.position.clone();
-								} else {
-									drag = false;
-								}
-							}
-							if (press || drag) {
-								currentPointerPosition = startPointerPosition;
-								startTime = Date.now();
-								return {
-									onMouseMove(event) {
-										currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-										if (press) {
-											if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
-												press = false;
-											}
-										}
-										if (drag) {
-											if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
-												drag = false;
-											}
-										}
-										return press || drag;
-									},
-
-									onMouseUp(event) {
-										if (press) {
-											if (event.which === 1) {
-												if (this.intersectObject(currentPointerPosition, pressedObject)) {
-													press.onPress(pressedObject, currentPointerPosition.toArray());
-												}
-											}
-											return false;
-										}
-									},
-
-									onTick() {
-										if (drag) {
-											currentTime = Date.now();
-											if (currentTime - startTime > drag.delay) {
-												return {
-													onMouseMove(event) {
-														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-														draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
-														drag.onDragStart(draggedObject, currentPointerPosition.toArray());
-														drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-														return {
-															onMouseMove(event) {
-																currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-																draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
-																drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-															},
-
-															onEnd() {
-																drag.onDragEnd(draggedObject);
-															},
-
-															//controlsEnabled: false,
-														};
-													},
-
-													//controlsEnabled: false,
-												};
-											}
-										}
-									},
-								};
+				let onMouseDown = function(event) {
+					if (event.which === 1 && event.target === domElement) {
+						startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+						if (press) {
+							([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
+							if (!pressedObject) {
+								press = false;
 							}
 						}
-					},
+						if (drag) {
+							([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
+							if (draggedObject) {
+								draggedObjectOriginalPosition = draggedObject.position.clone();
+							} else {
+								drag = false;
+							}
+						}
+						if (press || drag) {
+							currentPointerPosition = startPointerPosition;
+							startTime = Date.now();
+							let onMouseMove = function(event) {
+								currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+								if (press) {
+									if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
+										press = false;
+									}
+								}
+								if (drag) {
+									if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
+										drag = false;
+									}
+								}
+								return press || drag;
+							};
+							let onMouseUp = function(event) {
+								if (press) {
+									if (event.which === 1) {
+										if (this.intersectObject(currentPointerPosition, pressedObject)) {
+											press.onPress(pressedObject, currentPointerPosition.toArray());
+										}
+									}
+									return false;
+								}
+							};
+							let onTick = function() {
+								if (drag) {
+									currentTime = Date.now();
+									if (currentTime - startTime > drag.delay) {
+										let onMouseMove = function(event) {
+											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+											draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
+											drag.onDragStart(draggedObject, currentPointerPosition.toArray());
+											drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+											let onMouseMove = function(event) {
+												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
+												drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+											};
+											let onEnd = function() {
+												drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+											};
+											return {
+												onMouseMove,
+												onEnd,
+												//controlsEnabled: false,
+											};
+										};
+										return {
+											onMouseMove,
+											onMouseUp,
+										};
+									}
+								}
+							};
+							return {
+								onMouseMove,
+								onMouseUp,
+								onTick,
+							};
+						}
+					}
+				};
+				return {
+					onMouseDown,
 				};
 			}
 			if (hover) {
+				hover = Object.assign({
+					distanceTolerance: 2,
+					delay: 100, // mouse only
+					objectsFilter: Function_stubFalse,
+					interval: 200, // mouse only
+					onHoverIn: Function_noop,
+					onHoverOut: Function_noop,
+				}, hover);
 				return {
 					onMouseMove(event) {
 						let startTime = Date.now();
@@ -339,6 +457,10 @@ export default {
 			}
 		},
 
+		rerender() {
+			this.renderClock = {};
+		},
+
 		createRaycaster(pointerPosition) {
 			let position = getPercentageRelativePositionToElement(pointerPosition, this.renderer.domElement);
 			let x = position.x * 2 - 1;
@@ -370,6 +492,23 @@ export default {
 			let plane = new THREE.Plane();
 			plane.setFromNormalAndCoplanarPoint(this.camera.getWorldDirection(plane.normal), originalThreePosition);
 			return raycaster.ray.intersectPlane(plane);
+		},
+
+		intersectRectangle(startPointerPosition, endPointerPosition, objectFilter) {
+			let startRay = this.createRaycaster(startPointerPosition).ray;
+			let endRay = this.createRaycaster(endPointerPosition).ray;
+			let objects = this.scene.children.filter(objectFilter);
+			return objects.filter(object => {
+				let startPosition = startRay.closestPointToPoint(object.position);
+				let endPosition = endRay.closestPointToPoint(object.position);
+				let ellipseRadius = startPosition.distanceTo(endPosition) / 2;
+				let ellipseOrigin = startPosition.clone().add(endPosition).divideScalar(2);
+				return ellipseOrigin.distanceTo(object.position) < ellipseRadius;
+			});
+		},
+
+		intersectEllipse(startPointerPosition, endPointerPosition) {
+			return this.intersectRectangle(startPointerPosition, endPointerPosition, objectFilter);
 		},
 	},
 };

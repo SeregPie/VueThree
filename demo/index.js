@@ -119,6 +119,29 @@
 				var pointIndex = object.userData.index;
 				Vue.delete(this.selectedPoints, pointIndex);
 			},
+
+			onThreePointsSelectStart: function() {
+				this.controlsEnabled = false;
+			},
+
+			onThreePointsSelect: function(objects, objectsIn, objectsOut) {
+				objectsIn.forEach(function(object) {
+					var pointIndex = object.userData.index;
+					Vue.set(this.selectedPoints, pointIndex, true);
+				}.bind(this));
+				objectsOut.forEach(function(object) {
+					var pointIndex = object.userData.index;
+					Vue.delete(this.selectedPoints, pointIndex);
+				}.bind(this));
+			},
+
+			onThreePointsSelectEnd: function(objects) {
+				objects.forEach(function(object) {
+					var pointIndex = object.userData.index;
+					Vue.delete(this.selectedPoints, pointIndex);
+				}.bind(this));
+				this.controlsEnabled = true;
+			},
 		},
 
 		components: {
