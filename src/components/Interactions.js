@@ -127,20 +127,21 @@ export default {
 						onDragEnd: Function_noop,
 					}, drag);
 				}
-				select = Object.assign({
-					shape: 'rectangle', // ellipse
-					distanceTolerance: 1,
-					delay: 100,
-					objectsFilter: Function_stubFalse,
-					interval: 200,
-					borderWidth: 1,
-					borderColor: 'rgba(0,0,0,0.5)',
-					backgroundColor: 'rgba(255,255,255,0.1)',
-					onSelectStart: Function_noop,
-					onSelectIn: Function_noop,
-					onSelectOut: Function_noop,
-					onSelectEnd: Function_noop,
-				}, select);
+				if (select) {
+					select = Object.assign({
+						shape: 'rectangle', // ellipse
+						distanceTolerance: 1,
+						delay: 100,
+						objectsFilter: Function_stubFalse,
+						interval: 200,
+						borderWidth: 1,
+						borderColor: 'rgba(0,0,0,0.5)',
+						backgroundColor: 'rgba(255,255,255,0.1)',
+						onSelectStart: Function_noop,
+						onSelect: Function_noop,
+						onSelectEnd: Function_noop,
+					}, select);
+				}
 				let startPointerPosition;
 				let currentPointerPosition;
 				let startTime;
