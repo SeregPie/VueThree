@@ -4,7 +4,8 @@ import Array_difference from '../helpers/Array/difference';
 import Function_noop from '../helpers/Function/noop';
 import Function_stubFalse from '../helpers/Function/stubFalse';
 
-import getPercentageRelativePositionToElement from '../members/getPercentageRelativePositionToElement';
+import getToElementPercentageRelativePosition from '../members/getToElementPercentageRelativePosition';
+import getRaycastableCoords from '../members/getRaycastableCoords';
 
 export default {
 	name: 'VueThreeInteractions',
@@ -224,8 +225,8 @@ export default {
 												select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
 												return {
 													render(createElement) {
-														let startPosition = getPercentageRelativePositionToElement(startPointerPosition, domElement);
-														let endPosition = getPercentageRelativePositionToElement(currentPointerPosition, domElement);
+														let startPosition = getToElementPercentageRelativePosition(startPointerPosition, domElement);
+														let endPosition = getToElementPercentageRelativePosition(currentPointerPosition, domElement);
 														let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
 														let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
 														let areaStyle = {
@@ -445,11 +446,9 @@ export default {
 		},
 
 		createRaycaster(pointerPosition) {
-			let position = getPercentageRelativePositionToElement(pointerPosition, this.renderer.domElement);
-			let x = position.x * 2 - 1;
-			let y = 1 - position.y * 2;
+			let position = getRaycastableCoords(pointerPosition, this.renderer.domElement);
 			let raycaster = new THREE.Raycaster();
-			raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
+			raycaster.setFromCamera(position, this.camera);
 			return raycaster;
 		},
 
@@ -478,14 +477,16 @@ export default {
 		},
 
 		intersectRectangle(startPointerPosition, endPointerPosition, objectFilter) {
-			let startRay = this.createRaycaster(startPointerPosition).ray;
-			let endRay = this.createRaycaster(endPointerPosition).ray;
+			let startPosition = getRaycastableCoords(startPointerPosition, this.renderer.domElement);
+			let endPosition = getRaycastableCoords(endPointerPosition, this.renderer.domElement);
+			let minPosition = startPosition.clone().min(endPosition);
+			let maxPosition = startPosition.clone().max(endPosition);
+			let rectangle = new THREE.Box2(minPosition, maxPosition);
 			let objects = this.scene.children.filter(objectFilter);
 			return objects.filter(object => {
-				let startPosition = startRay.closestPointToPoint(object.position);
-				let endPosition = endRay.closestPointToPoint(object.position);
-				let box = new THREE.Box3(startPosition.clone().min(endPosition), startPosition.clone().max(endPosition));
-				return box.containsPoint(object.position);
+				let projectedPosition = object.position.clone().project(this.camera);
+				let position = new THREE.Vector2(projectedPosition.x, projectedPosition.y);
+				return rectangle.containsPoint(position);
 			});
 		},
 
