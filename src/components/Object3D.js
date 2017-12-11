@@ -7,10 +7,6 @@ import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 export default {
 	name: 'VueThreeObject',
 
-	render(createElement) {
-		return createElement('div', this.$slots.default);
-	},
-
 	props: {
 		position: {
 			type: [Object, Array],
@@ -36,6 +32,29 @@ export default {
 			default() {
 				return {};
 			},
+		},
+	},
+
+	computed: {
+		object() {
+			return new THREE.Object3D();
+		},
+
+		renderer() {
+			return this.$parent.renderer;
+		},
+	},
+
+	watch: {
+		object: {
+			handler(newObject, oldObject) {
+				if (oldObject) {
+					this.$parent.object.remove(oldObject);
+					this.dispose(oldObject);
+				}
+				this.$parent.object.add(newObject);
+			},
+			immediate: true,
 		},
 	},
 
@@ -71,30 +90,11 @@ export default {
 		this.dispose(this.object);
 	},
 
-	computed: {
-		object() {
-			return new THREE.Object3D();
-		},
-
-		renderer() {
-			return this.$parent.renderer;
-		},
-	},
-
-	watch: {
-		object: {
-			handler(newObject, oldObject) {
-				if (oldObject) {
-					this.$parent.object.remove(oldObject);
-					this.dispose(oldObject);
-				}
-				this.$parent.object.add(newObject);
-			},
-			immediate: true,
-		},
-	},
-
 	methods: {
 		dispose(object) {},
+	},
+
+	render(createElement) {
+		return createElement('div', this.$slots.default);
 	},
 };

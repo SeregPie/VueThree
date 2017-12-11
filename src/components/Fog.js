@@ -5,10 +5,6 @@ import Function_noop from '../helpers/Function/noop';
 export default {
 	name: 'VueThreeFog',
 
-	render(createElement) {
-		return createElement('div');
-	},
-
 	props: {
 		color: {
 			type: [Number, String],
@@ -23,6 +19,14 @@ export default {
 			default: 1000,
 		},
 	},
+
+	computed: {
+		fog() {
+			return new THREE.Fog();
+		},
+	},
+
+	watch: {},
 
 	mounted() {
 		this.$parent.object.fog = this.fog;
@@ -51,11 +55,7 @@ export default {
 		this.$parent.object.fog = null;
 	},
 
-	computed: {
-		fog() {
-			return new THREE.Fog();
-		},
+	render(createElement) {
+		return createElement('div');
 	},
-
-	watch: {},
 };

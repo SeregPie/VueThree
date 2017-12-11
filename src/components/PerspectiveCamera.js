@@ -8,7 +8,6 @@ export default {
 	name: 'VueThreePerspectiveCamera',
 
 	mixins: [Object3D],
-	render: Object3D.render,
 
 	props: {
 		fov: {
@@ -24,6 +23,14 @@ export default {
 			default: 2000,
 		},
 	},
+
+	computed: {
+		object() {
+			return new THREE.PerspectiveCamera();
+		},
+	},
+
+	watch: {},
 
 	beforeCreate() {
 		Object.entries({
@@ -48,11 +55,5 @@ export default {
 		this.$parent.$parent.camera = this.object;
 	},
 
-	computed: {
-		object() {
-			return new THREE.PerspectiveCamera();
-		},
-	},
-
-	watch: {},
+	render: Object3D.render,
 };

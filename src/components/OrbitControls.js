@@ -7,10 +7,6 @@ import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 export default {
 	name: 'VueThreeOrbitControls',
 
-	render(createElement) {
-		return createElement('div');
-	},
-
 	props: {
 		cameraPosition: {
 			type: [Object, Array],
@@ -125,6 +121,62 @@ export default {
 		};
 	},
 
+	computed: {
+		object() {
+			return this.frozen$object.o;
+		},
+
+		renderer() {
+			return this.$parent.renderer;
+		},
+
+		controls() {
+			return new THREE.OrbitControls(this.object, this.renderer.domElement);
+		},
+
+		startToUpdateControls() {
+			return function() {
+				if (!this._isDestroyed) {
+					setTimeout(() => {
+						requestAnimationFrame(() => {
+							this.startToUpdateControls();
+						});
+					}, this.intervalBetweenUpdateControls);
+					this.updateControls();
+				}
+			};
+		},
+	},
+
+	watch: {
+		cameraPosition(value) {
+			if (this.value.cameraPosition !== value) {
+				this.setObject();
+			}
+		},
+
+		cameraQuaternion(value) {
+			if (this.value.cameraQuaternion !== value) {
+				this.setObject();
+			}
+		},
+
+		controls: {
+			handler(newControls, oldControls) {
+				if (oldControls) {
+					this.dispose(oldControls);
+				}
+			},
+			immediate: true,
+		},
+
+		value({cameraPosition, cameraQuaternion}) {
+			this.$emit('update:cameraPosition', cameraPosition);
+			this.$emit('update:cameraQuaternion', cameraQuaternion);
+		},
+	},
+
+
 	beforeCreate() {
 		Object.entries({
 			setEnabled() {
@@ -220,61 +272,6 @@ export default {
 		this.dispose(this.controls);
 	},
 
-	computed: {
-		object() {
-			return this.frozen$object.o;
-		},
-
-		renderer() {
-			return this.$parent.renderer;
-		},
-
-		controls() {
-			return new THREE.OrbitControls(this.object, this.renderer.domElement);
-		},
-
-		startToUpdateControls() {
-			return function() {
-				if (!this._isDestroyed) {
-					setTimeout(() => {
-						requestAnimationFrame(() => {
-							this.startToUpdateControls();
-						});
-					}, this.intervalBetweenUpdateControls);
-					this.updateControls();
-				}
-			};
-		},
-	},
-
-	watch: {
-		cameraPosition(value) {
-			if (this.value.cameraPosition !== value) {
-				this.setObject();
-			}
-		},
-
-		cameraQuaternion(value) {
-			if (this.value.cameraQuaternion !== value) {
-				this.setObject();
-			}
-		},
-
-		controls: {
-			handler(newControls, oldControls) {
-				if (oldControls) {
-					this.dispose(oldControls);
-				}
-			},
-			immediate: true,
-		},
-
-		value({cameraPosition, cameraQuaternion}) {
-			this.$emit('update:cameraPosition', cameraPosition);
-			this.$emit('update:cameraQuaternion', cameraQuaternion);
-		},
-	},
-
 	methods: {
 		createObject() {
 			let object = new THREE.PerspectiveCamera();
@@ -300,5 +297,9 @@ export default {
 				cameraQuaternion: this.object.quaternion.toArray(),
 			});
 		},
+	},
+
+	render(createElement) {
+		return createElement('div');
 	},
 };

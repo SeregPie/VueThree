@@ -147,28 +147,9 @@
 		components: {
 			mySphereHelper: {
 				mixins: [VueThree.Object3D],
-				render: VueThree.Object3D.render,
 
 				props: {
 					color: {},
-				},
-
-				beforeCreate: function() {
-					Object.entries({
-						setMaterialColor: function() {
-							this.object.material.color.set(this.color);
-						},
-					}).forEach(function(entry) {
-						var key = entry[0];
-						var fn = entry[1];
-						this.$options.computed[key] = fn;
-						this.$options.watch[key] = function() {};
-					}.bind(this));
-				},
-
-				beforeDestroy: function() {
-					this.object.geometry.dispose();
-					this.object.material.dispose();
 				},
 
 				computed: {
@@ -187,21 +168,46 @@
 
 				watch: {},
 
+				beforeCreate: function() {
+					Object.entries({
+						setMaterialColor: function() {
+							this.object.material.color.set(this.color);
+						},
+					}).forEach(function(entry) {
+						var key = entry[0];
+						var fn = entry[1];
+						this.$options.computed[key] = fn;
+						this.$options.watch[key] = function() {};
+					}.bind(this));
+				},
+
 				methods: {
 					dispose: function(object) {
 						object.geometry.dispose();
 						object.material.dispose();
 					},
 				},
+
+				render: VueThree.Object3D.render,
 			},
 
 			myPoint: {
 				mixins: [VueThree.Object3D],
-				render: VueThree.Object3D.render,
 
 				props: {
 					color: {},
 				},
+
+				computed: {
+					object: function() {
+						return new THREE.Mesh(
+							new THREE.SphereBufferGeometry(1/2, 24, 24),
+							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3})
+						);
+					},
+				},
+
+				watch: {},
 
 				beforeCreate: function() {
 					Object.entries({
@@ -216,23 +222,14 @@
 					}.bind(this));
 				},
 
-				computed: {
-					object: function() {
-						return new THREE.Mesh(
-							new THREE.SphereBufferGeometry(1/2, 24, 24),
-							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3})
-						);
-					},
-				},
-
-				watch: {},
-
 				methods: {
 					dispose: function(object) {
 						object.geometry.dispose();
 						object.material.dispose();
 					},
 				},
+
+				render: VueThree.Object3D.render,
 			},
 		},
 	});

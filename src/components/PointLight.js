@@ -8,7 +8,6 @@ export default {
 	name: 'VueThreePointLight',
 
 	mixins: [Object3D],
-	render: Object3D.render,
 
 	props: {
 		color: {
@@ -28,6 +27,14 @@ export default {
 			default: 1,
 		},
 	},
+
+	computed: {
+		object() {
+			return new THREE.PointLight();
+		},
+	},
+
+	watch: {},
 
 	beforeCreate() {
 		Object.entries({
@@ -52,11 +59,5 @@ export default {
 		});
 	},
 
-	computed: {
-		object() {
-			return new THREE.PointLight();
-		},
-	},
-
-	watch: {},
+	render: Object3D.render,
 };

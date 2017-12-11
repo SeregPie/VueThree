@@ -5,38 +5,6 @@ import Function_noop from '../helpers/Function/noop';
 export default {
 	name: 'VueThreeRenderer',
 
-	render(createElement) {
-		return(
-			createElement(
-				'div',
-				{
-					style: {
-						position: 'relative',
-						width: '100%',
-						height: '100%',
-					},
-				},
-				[
-					createElement(
-						'div',
-						{
-							style: {
-								position: 'absolute',
-								left: 0,
-								right: 0,
-								top: 0,
-								bottom: 0,
-								overflow: 'hidden',
-							},
-							ref: 'container'
-						},
-						this.$slots.default,
-					),
-				],
-			)
-		);
-	},
-
 	props: {
 		antialias: {
 			type: Boolean,
@@ -82,33 +50,6 @@ export default {
 			frozen$scene: {o: null},
 			frozen$camera: {o: null},
 		};
-	},
-
-	beforeCreate() {
-		Object.entries({
-			setSize() {
-				this.renderer.setSize(this.containerWidth, this.containerHeight);
-				if (this.containerWidth > 0 && this.containerHeight > 0) {
-					if (this.camera) {
-						this.camera.aspect = this.containerWidth / this.containerHeight;
-						this.camera.updateProjectionMatrix();
-					}
-				}
-			},
-
-			setClearColor() {
-				this.renderer.setClearColor(this.clearColor, this.clearAlpha);
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
-	mounted() {
-		this.$refs.container.appendChild(this.renderer.domElement);
-		this.startToUpdateContainerSize();
-		this.startToRenderScene();
 	},
 
 	computed: {
@@ -165,6 +106,33 @@ export default {
 
 	watch: {},
 
+	beforeCreate() {
+		Object.entries({
+			setSize() {
+				this.renderer.setSize(this.containerWidth, this.containerHeight);
+				if (this.containerWidth > 0 && this.containerHeight > 0) {
+					if (this.camera) {
+						this.camera.aspect = this.containerWidth / this.containerHeight;
+						this.camera.updateProjectionMatrix();
+					}
+				}
+			},
+
+			setClearColor() {
+				this.renderer.setClearColor(this.clearColor, this.clearAlpha);
+			},
+		}).forEach(([key, fn]) => {
+			this.$options.computed[key] = fn;
+			this.$options.watch[key] = Function_noop;
+		});
+	},
+
+	mounted() {
+		this.$refs.container.appendChild(this.renderer.domElement);
+		this.startToUpdateContainerSize();
+		this.startToRenderScene();
+	},
+
 	methods: {
 		updateContainerSize() {
 			let {width, height} = this.$el.getBoundingClientRect();
@@ -177,5 +145,37 @@ export default {
 				this.renderer.render(this.scene, this.camera);
 			}
 		},
+	},
+
+	render(createElement) {
+		return(
+			createElement(
+				'div',
+				{
+					style: {
+						position: 'relative',
+						width: '100%',
+						height: '100%',
+					},
+				},
+				[
+					createElement(
+						'div',
+						{
+							style: {
+								position: 'absolute',
+								left: 0,
+								right: 0,
+								top: 0,
+								bottom: 0,
+								overflow: 'hidden',
+							},
+							ref: 'container'
+						},
+						this.$slots.default,
+					),
+				],
+			)
+		);
 	},
 };

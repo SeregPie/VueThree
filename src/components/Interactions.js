@@ -484,14 +484,22 @@ export default {
 			return objects.filter(object => {
 				let startPosition = startRay.closestPointToPoint(object.position);
 				let endPosition = endRay.closestPointToPoint(object.position);
-				let ellipseRadius = startPosition.distanceTo(endPosition) / 2;
-				let ellipseOrigin = startPosition.clone().add(endPosition).divideScalar(2);
-				return ellipseOrigin.distanceTo(object.position) < ellipseRadius;
+				let box = new THREE.Box3(startPosition.clone().min(endPosition), startPosition.clone().max(endPosition));
+				return box.containsPoint(object.position);
 			});
 		},
 
 		intersectEllipse(startPointerPosition, endPointerPosition, objectFilter) {
-			return this.intersectRectangle(startPointerPosition, endPointerPosition, objectFilter);
+			let startRay = this.createRaycaster(startPointerPosition).ray;
+			let endRay = this.createRaycaster(endPointerPosition).ray;
+			let objects = this.scene.children.filter(objectFilter);
+			return objects.filter(object => {
+				let startPosition = startRay.closestPointToPoint(object.position);
+				let endPosition = endRay.closestPointToPoint(object.position);
+				let ellipseRadius = startPosition.distanceTo(endPosition) / 2;
+				let ellipseOrigin = startPosition.clone().add(endPosition).divideScalar(2);
+				return ellipseOrigin.distanceTo(object.position) < ellipseRadius;
+			});
 		},
 	},
 };

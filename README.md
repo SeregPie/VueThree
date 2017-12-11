@@ -115,7 +115,6 @@ Create custom THREE components.
 
 let MySphere = {
 	mixins: [VueThree.Object3D],
-	render: VueThree.Object3D.render,
 
 	props: {
 		color: {},
@@ -144,6 +143,8 @@ let MySphere = {
 			object.material.dispose();
 		},
 	},
+
+	render: VueThree.Object3D.render,
 },
 
 ```
