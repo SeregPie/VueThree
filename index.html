@@ -5,26 +5,38 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 		<title>VueThree</title>
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Array.prototype.@@iterator,Array.prototype.find,Array.prototype.includes,Object.entries,Object.values"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>
 		<style>
 			[v-cloak] {
 				display: none;
 			}
 		</style>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.9/vue.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"></script>
 		<script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
 		<script src="VueThree.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"/>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.1/vuetify.min.css"/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.1/vuetify.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.2/vuetify.min.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-alpha.2/vuetify.min.js"></script>
 	</head>
 	<body>
-		<v-app id="App" v-cloak>
-			<v-toolbar color="amber darken-3" dark fixed clipped-left app>
+		<v-app
+			v-cloak
+			id="App"
+		>
+			<v-toolbar
+				dark
+				color="amber darken-3"
+				clipped-left
+				app
+			>
 				<v-toolbar-title>VueThree</v-toolbar-title>
 				<v-spacer></v-spacer>
-				<v-btn icon href="https://github.com/SeregPie/VueThree" target="_blank">
+				<v-btn
+					icon
+					href="https://github.com/SeregPie/VueThree"
+					target="_blank"
+				>
 					<v-icon>fa-github</v-icon>
 				</v-btn>
 			</v-toolbar>
@@ -76,12 +88,12 @@
 				<v-tooltip left>
 					<v-btn
 						slot="activator"
-						fab
 						fixed
 						right
 						bottom
-						color="amber"
+						fab
 						dark
+						color="amber"
 						@click="resetCamera"
 					>
 						<v-icon>explore</v-icon>
