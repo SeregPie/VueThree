@@ -3,6 +3,7 @@ import THREE from 'three';
 import Array_difference from '../helpers/Array/difference';
 import Function_noop from '../helpers/Function/noop';
 import Function_stubFalse from '../helpers/Function/stubFalse';
+import Function_stubNull from '../helpers/Function/stubNull';
 import THREE_Ellipse_containsPoint from '../helpers/THREE/Ellipse/containsPoint';
 
 import getToElementPercentageRelativePosition from '../members/getToElementPercentageRelativePosition';
@@ -130,12 +131,12 @@ export default {
 				render(createElement) {
 					return createElement('div');
 				},
-				onTouchStart: Function_stubFalse,
-				onTouchMove: Function_stubFalse,
-				onTouchEnd: Function_stubFalse,
-				onMouseMove: Function_stubFalse,
-				onMouseDown: Function_stubFalse,
-				onMouseUp: Function_stubFalse,
+				onTouchStart: Function_stubNull,
+				onTouchMove: Function_stubNull,
+				onTouchEnd: Function_stubNull,
+				onMouseMove: Function_stubNull,
+				onMouseDown: Function_stubNull,
+				onMouseUp: Function_stubNull,
 				onTick: Function_noop,
 				onEnd: Function_noop,
 				//controlsEnabled: true,
