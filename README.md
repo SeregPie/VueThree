@@ -239,6 +239,106 @@ let MySphere = {
 | `enableKeys` | `Boolean` | `true` |
 | `fintervalBetweenUpdateControlsov` | `Number` | `1000 / 60` |
 
+### Interactions
+
+#### name
+
+`vue-three-interactions`
+
+#### properties
+
+| property | type | default |
+| ---: | :--- | :--- |
+| `hover` | `Object` | n/a |
+| `press` | `Object` | n/a |
+| `drag` | `Object` | n/a |
+| `select` | `Object` | n/a |
+
+```js
+
+// hover
+{
+	distanceTolerance: 2,
+	delay: 100, // mouse only
+	objectFilter(object) {
+		return object.name === 'horse';
+	},
+	interval: 200, // mouse only
+	onHoverIn(hoveredObject, hoverPosition2D) {
+
+	},
+	onHoverOut(hoveredObject) {
+
+	},
+}
+
+```
+
+```js
+
+// press
+{
+	distanceTolerance: 2,
+	delay: 100, // touch only
+	objectFilter(object) {
+		return object.name === 'horse';
+	},
+	onPress(pressedObject, pressPosition2D) {
+
+	},
+}
+
+```
+
+```js
+
+// drag
+{
+	distanceTolerance: 2,
+	delay: 100,
+	objectFilter(object) {
+		return object.name === 'horse';
+	},
+	onDragStart(draggedObject, dragPosition3D, dragPosition2D) {
+
+	},
+	onDrag(draggedObject, dragPosition3D, dragPosition2D) {
+
+	},
+	onDragEnd(draggedObject, dragPosition3D, dragPosition2D) {
+
+	},
+}
+
+```
+
+```js
+
+// select
+{
+	shape: 'rectangle', // or 'ellipse'
+	distanceTolerance: 1,
+	delay: 100,
+	objectFilter(object) {
+		return object.name === 'horse';
+	},
+	interval: 200,
+	borderWidth: 1,
+	borderColor: 'rgba(0,0,0,0.5)',
+	backgroundColor: 'rgba(255,255,255,0.1)',
+	onSelectStart(startSelectPosition2D, endSelectPosition2D) {
+
+	},
+	onSelect(selectedObjects, selectedObjectsIn, selectedObjectsOut, startSelectPosition2D, endSelectPosition2D) {
+
+	},
+	onSelectStart(selectedObjects, startSelectPosition2D, endSelectPosition2D) {
+
+	},
+}
+
+```
+
 ### PointLight
 
 #### name
