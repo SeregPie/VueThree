@@ -7,9 +7,9 @@
 		el: '#App',
 
 		data: {
-			backgroundColor: '#786554',
-			primaryColor: '#63bcb8',
-			secondaryColor: '#ff5e92',
+			backgroundColor: '#253037',
+			primaryColor: '#ececeb',
+			secondaryColor: '#a3ff00',
 			lightPosition: [1, 1, 1],
 			cameraPosition: defaultCameraPosition,
 			cameraQuaternion: defaultCameraQuaternion,

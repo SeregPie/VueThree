@@ -127,6 +127,10 @@ export default {
 		},
 
 		strategy() {
+			return this.currentStrategy || this.getInitialStrategy();
+		},
+
+		populatedStrategy() {
 			return Object.assign({
 				render(createElement) {
 					return createElement('div');
@@ -140,7 +144,7 @@ export default {
 				onTick: Function_noop,
 				onEnd: Function_noop,
 				//controlsEnabled: true,
-			}, this.currentStrategy || this.getInitialStrategy());
+			}, this.strategy);
 		},
 	},
 
@@ -173,31 +177,31 @@ export default {
 
 	methods: {
 		onTouchStart(event) {
-			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onTouchStart.call(this, event));
 		},
 
 		onTouchMove(event) {
-			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onTouchMove.call(this, event));
 		},
 
 		onTouchEnd(event) {
-			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onTouchEnd.call(this, event));
 		},
 
 		onMouseMove(event) {
-			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onMouseMove.call(this, event));
 		},
 
 		onMouseDown(event) {
-			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onMouseDown.call(this, event));
 		},
 
 		onMouseUp(event) {
-			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
+			this.setNextStrategy(this.populatedStrategy.onMouseUp.call(this, event));
 		},
 
 		onTick() {
-			this.setNextStrategy(this.strategy.onTick.call(this));
+			this.setNextStrategy(this.populatedStrategy.onTick.call(this));
 		},
 
 		startTicking() {
@@ -538,6 +542,6 @@ export default {
 
 	render(createElement) {
 		let renderClock = this.renderClock;
-		return this.strategy.render(createElement);
+		return this.populatedStrategy.render(createElement);
 	},
 };
