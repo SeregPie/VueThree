@@ -32,7 +32,7 @@
 		computed: {
 			interactions() {
 				return {
-					hover0: {
+					hover: {
 						objectFilter: this.isThreePoint,
 						onHoverIn: this.onThreePointHoverIn,
 						onHoverOut: this.onThreePointHoverOut
@@ -47,7 +47,7 @@
 						onDrag: this.onThreePointDrag,
 						onDragEnd: this.onThreePointDragEnd,
 					},
-					select0: {
+					select: {
 						shape: 'ellipse',
 						objectFilter: this.isThreePoint,
 						onSelectStart: this.onThreePointsSelectStart,

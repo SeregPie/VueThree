@@ -131,19 +131,94 @@ export default {
 				render(createElement) {
 					return createElement('div');
 				},
-				onTouchStart: Function_stubNull,
-				onTouchMove: Function_stubNull,
-				onTouchEnd: Function_stubNull,
-				onMouseMove: Function_stubNull,
-				onMouseDown: Function_stubNull,
-				onMouseUp: Function_stubNull,
+				onTouchStart: Function_noop,
+				onTouchMove: Function_noop,
+				onTouchEnd: Function_noop,
+				onMouseMove: Function_noop,
+				onMouseDown: Function_noop,
+				onMouseUp: Function_noop,
 				onTick: Function_noop,
 				onEnd: Function_noop,
 				//controlsEnabled: true,
-			}, this.currentStrategy || this.initialStrategy);
+			}, this.currentStrategy || this.getInitialStrategy());
+		},
+	},
+
+	watch: {
+		strategy(newStrategy, oldStrategy) {
+			if (oldStrategy) {
+				oldStrategy.onEnd.call(this);
+			}
+		},
+	},
+
+	mounted() {
+		window.addEventListener('touchstart', this.touchStartEventListener);
+		window.addEventListener('touchmove', this.touchMoveEventListener);
+		window.addEventListener('touchend', this.touchEndEventListener);
+		window.addEventListener('mousemove', this.mouseMoveEventListener);
+		window.addEventListener('mousedown', this.mouseDownEventListener);
+		window.addEventListener('mouseup', this.mouseUpEventListener);
+		this.startTicking();
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('touchstart', this.touchStartEventListener);
+		window.removeEventListener('touchmove', this.touchMoveEventListener);
+		window.removeEventListener('touchend', this.touchEndEventListener);
+		window.removeEventListener('mousemove', this.mouseMoveEventListener);
+		window.removeEventListener('mousedown', this.mouseDownEventListener);
+		window.removeEventListener('mouseup', this.mouseUpEventListener);
+	},
+
+	methods: {
+		onTouchStart(event) {
+			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
 		},
 
-		initialStrategy() {
+		onTouchMove(event) {
+			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
+		},
+
+		onTouchEnd(event) {
+			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
+		},
+
+		onMouseMove(event) {
+			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
+		},
+
+		onMouseDown(event) {
+			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
+		},
+
+		onMouseUp(event) {
+			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
+		},
+
+		onTick() {
+			this.setNextStrategy(this.strategy.onTick.call(this));
+		},
+
+		startTicking() {
+			if (!this._isDestroyed) {
+				requestAnimationFrame(() => {
+					this.startTicking();
+				});
+				this.onTick();
+			}
+		},
+
+		setNextStrategy(strategy) {
+			if (strategy === null) {
+				this.currentStrategy = this.getInitialStrategy();
+			} else
+			if (strategy) {
+				this.currentStrategy = strategy;
+			}
+		},
+
+		getInitialStrategy() {
 			let domElement = this.renderer.domElement;
 			let hover = this.populatedHover;
 			let press = this.populatedPress;
@@ -206,6 +281,8 @@ export default {
 														draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
 														drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
 													},
+													onMouseDown: Function_stubNull,
+													onMouseUp: Function_stubNull,
 													onEnd() {
 														drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
 													},
@@ -266,6 +343,8 @@ export default {
 														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
 														this.rerender();
 													},
+													onMouseDown: Function_stubNull,
+													onMouseUp: Function_stubNull,
 													onTick() {
 														currentTime = Date.now();
 														if (currentTime - previousIntersect > select.interval) {
@@ -316,6 +395,7 @@ export default {
 											return null;
 										}
 									},
+									onMouseDown: Function_stubNull,
 									onMouseUp(event) {
 										if (press) {
 											if (event.which === 1) {
@@ -389,78 +469,6 @@ export default {
 						};
 					},
 				};
-			}
-		},
-	},
-
-	watch: {
-		strategy(newStrategy, oldStrategy) {
-			if (oldStrategy) {
-				oldStrategy.onEnd.call(this);
-			}
-		},
-	},
-
-	mounted() {
-		window.addEventListener('touchstart', this.touchStartEventListener);
-		window.addEventListener('touchmove', this.touchMoveEventListener);
-		window.addEventListener('touchend', this.touchEndEventListener);
-		window.addEventListener('mousemove', this.mouseMoveEventListener);
-		window.addEventListener('mousedown', this.mouseDownEventListener);
-		window.addEventListener('mouseup', this.mouseUpEventListener);
-		this.startTicking();
-	},
-
-	beforeDestroy() {
-		window.removeEventListener('touchstart', this.touchStartEventListener);
-		window.removeEventListener('touchmove', this.touchMoveEventListener);
-		window.removeEventListener('touchend', this.touchEndEventListener);
-		window.removeEventListener('mousemove', this.mouseMoveEventListener);
-		window.removeEventListener('mousedown', this.mouseDownEventListener);
-		window.removeEventListener('mouseup', this.mouseUpEventListener);
-	},
-
-	methods: {
-		onTouchStart(event) {
-			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
-		},
-
-		onTouchMove(event) {
-			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
-		},
-
-		onTouchEnd(event) {
-			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
-		},
-
-		onMouseMove(event) {
-			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
-		},
-
-		onMouseDown(event) {
-			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
-		},
-
-		onMouseUp(event) {
-			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
-		},
-
-		onTick() {
-			this.setNextStrategy(this.strategy.onTick.call(this));
-		},
-
-		startTicking() {
-			if (!this._isDestroyed) {
-				requestAnimationFrame(() => {
-					this.startTicking();
-				});
-				this.onTick();
-			}
-		},
-
-		setNextStrategy(strategy) {
-			if (strategy !== undefined) {
-				this.currentStrategy = strategy;
 			}
 		},
 
