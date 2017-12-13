@@ -3,17 +3,13 @@ import THREE from 'three';
 import Array_difference from '../helpers/Array/difference';
 import Function_noop from '../helpers/Function/noop';
 import Function_stubFalse from '../helpers/Function/stubFalse';
+import THREE_Ellipse_containsPoint from '../helpers/THREE/Ellipse/containsPoint';
 
 import getToElementPercentageRelativePosition from '../members/getToElementPercentageRelativePosition';
 import getRaycastableCoords from '../members/getRaycastableCoords';
 
 export default {
 	name: 'VueThreeInteractions',
-
-	render(createElement) {
-		let renderClock = this.renderClock;
-		return this.strategy.render(createElement);
-	},
 
 	props: {
 		hover: Object,
@@ -27,25 +23,6 @@ export default {
 			currentStrategy: null,
 			renderClock: null,
 		};
-	},
-
-	mounted() {
-		window.addEventListener('touchstart', this.touchStartEventListener);
-		window.addEventListener('touchmove', this.touchMoveEventListener);
-		window.addEventListener('touchend', this.touchEndEventListener);
-		window.addEventListener('mousemove', this.mouseMoveEventListener);
-		window.addEventListener('mousedown', this.mouseDownEventListener);
-		window.addEventListener('mouseup', this.mouseUpEventListener);
-		this.startTicking();
-	},
-
-	beforeDestroy() {
-		window.removeEventListener('touchstart', this.touchStartEventListener);
-		window.removeEventListener('touchmove', this.touchMoveEventListener);
-		window.removeEventListener('touchend', this.touchEndEventListener);
-		window.removeEventListener('mousemove', this.mouseMoveEventListener);
-		window.removeEventListener('mousedown', this.mouseDownEventListener);
-		window.removeEventListener('mouseup', this.mouseUpEventListener);
 	},
 
 	computed: {
@@ -394,6 +371,25 @@ export default {
 		},
 	},
 
+	mounted() {
+		window.addEventListener('touchstart', this.touchStartEventListener);
+		window.addEventListener('touchmove', this.touchMoveEventListener);
+		window.addEventListener('touchend', this.touchEndEventListener);
+		window.addEventListener('mousemove', this.mouseMoveEventListener);
+		window.addEventListener('mousedown', this.mouseDownEventListener);
+		window.addEventListener('mouseup', this.mouseUpEventListener);
+		this.startTicking();
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('touchstart', this.touchStartEventListener);
+		window.removeEventListener('touchmove', this.touchMoveEventListener);
+		window.removeEventListener('touchend', this.touchEndEventListener);
+		window.removeEventListener('mousemove', this.mouseMoveEventListener);
+		window.removeEventListener('mousedown', this.mouseDownEventListener);
+		window.removeEventListener('mouseup', this.mouseUpEventListener);
+	},
+
 	methods: {
 		onTouchStart(event) {
 			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
@@ -484,23 +480,29 @@ export default {
 			let rectangle = new THREE.Box2(minPosition, maxPosition);
 			let objects = this.scene.children.filter(objectFilter);
 			return objects.filter(object => {
-				let projectedPosition = object.position.clone().project(this.camera);
-				let position = new THREE.Vector2(projectedPosition.x, projectedPosition.y);
+				let position = object.position.clone().project(this.camera);
+				position = new THREE.Vector2(position.x, position.y);
 				return rectangle.containsPoint(position);
 			});
 		},
 
 		intersectEllipse(startPointerPosition, endPointerPosition, objectFilter) {
-			let startRay = this.createRaycaster(startPointerPosition).ray;
-			let endRay = this.createRaycaster(endPointerPosition).ray;
+			let startPosition = getRaycastableCoords(startPointerPosition, this.renderer.domElement);
+			let endPosition = getRaycastableCoords(endPointerPosition, this.renderer.domElement);
+			let minPosition = startPosition.clone().min(endPosition);
+			let maxPosition = startPosition.clone().max(endPosition);
+			let rectangle = new THREE.Box2(minPosition, maxPosition);
 			let objects = this.scene.children.filter(objectFilter);
 			return objects.filter(object => {
-				let startPosition = startRay.closestPointToPoint(object.position);
-				let endPosition = endRay.closestPointToPoint(object.position);
-				let ellipseRadius = startPosition.distanceTo(endPosition) / 2;
-				let ellipseOrigin = startPosition.clone().add(endPosition).divideScalar(2);
-				return ellipseOrigin.distanceTo(object.position) < ellipseRadius;
+				let position = object.position.clone().project(this.camera);
+				position = new THREE.Vector2(position.x, position.y);
+				return THREE_Ellipse_containsPoint(rectangle, position);
 			});
 		},
+	},
+
+	render(createElement) {
+		let renderClock = this.renderClock;
+		return this.strategy.render(createElement);
 	},
 };
