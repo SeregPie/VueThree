@@ -30,6 +30,33 @@
 		},
 
 		computed: {
+			interactions() {
+				return {
+					hover0: {
+						objectFilter: this.isThreePoint,
+						onHoverIn: this.onThreePointHoverIn,
+						onHoverOut: this.onThreePointHoverOut
+					},
+					press: {
+						objectFilter: this.isThreePoint,
+						onPress: this.onThreePointPress,
+					},
+					drag: {
+						objectFilter: this.isThreePoint,
+						onDragStart: this.onThreePointDragStart,
+						onDrag: this.onThreePointDrag,
+						onDragEnd: this.onThreePointDragEnd,
+					},
+					select0: {
+						shape: 'ellipse',
+						objectFilter: this.isThreePoint,
+						onSelectStart: this.onThreePointsSelectStart,
+						onSelect: this.onThreePointsSelect,
+						onSelectEnd: this.onThreePointsSelectEnd,
+					},
+				};
+			},
+
 			threeSphereHelper: function() {
 				return {
 					component: 'mySphereHelper',

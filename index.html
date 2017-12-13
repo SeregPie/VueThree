@@ -67,10 +67,10 @@
 						></vue-three-point-light>
 					</vue-three-scene>
 					<vue-three-interactions
-						:press="{objectFilter: isThreePoint, onPress: onThreePointPress}"
-						:drag="{objectFilter: isThreePoint, onDragStart: onThreePointDragStart, onDrag: onThreePointDrag, onDragEnd: onThreePointDragEnd}"
-						:hover="{objectFilter: isThreePoint, onHoverIn: onThreePointHoverIn, onHoverOut: onThreePointHoverOut}"
-						:select="{shape: 'ellipse', objectFilter: isThreePoint, onSelectStart: onThreePointsSelectStart, onSelect: onThreePointsSelect, onSelectEnd: onThreePointsSelectEnd}"
+						:hover="interactions.hover"
+						:press="interactions.press"
+						:drag="interactions.drag"
+						:select="interactions.select"
 					></vue-three-interactions>
 					<vue-three-orbit-controls
 						v-if="controlsEnabled"

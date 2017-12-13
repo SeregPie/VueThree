@@ -62,6 +62,69 @@ export default {
 			return this.$parent.scene;
 		},
 
+		populatedHover() {
+			let hover = this.hover;
+
+			if (hover) {
+				return Object.assign({
+					distanceTolerance: 2,
+					delay: 100, // mouse only
+					objectsFilter: Function_stubFalse,
+					interval: 200, // mouse only
+					onHoverIn: Function_noop,
+					onHoverOut: Function_noop,
+				}, hover);
+			}
+		},
+
+		populatedPress() {
+			let press = this.press;
+
+			if (press) {
+				return Object.assign({
+					distanceTolerance: 2,
+					delay: 100, // touch only
+					objectFilter: Function_stubFalse,
+					onPress: Function_noop,
+				}, press);
+			}
+		},
+
+		populatedDrag() {
+			let drag = this.drag;
+
+			if (drag) {
+				return Object.assign({
+					distanceTolerance: 2,
+					delay: 100,
+					objectsFilter: Function_stubFalse,
+					onDragStart: Function_noop,
+					onDrag: Function_noop,
+					onDragEnd: Function_noop,
+				}, drag);
+			}
+		},
+
+		populatedSelect() {
+			let select = this.select;
+
+			if (select) {
+				return Object.assign({
+					shape: 'rectangle', // ellipse
+					distanceTolerance: 1,
+					delay: 100,
+					objectsFilter: Function_stubFalse,
+					interval: 200,
+					borderWidth: 1,
+					borderColor: 'rgba(0,0,0,0.5)',
+					backgroundColor: 'rgba(255,255,255,0.1)',
+					onSelectStart: Function_noop,
+					onSelect: Function_noop,
+					onSelectEnd: Function_noop,
+				}, select);
+			}
+		},
+
 		strategy() {
 			return Object.assign({
 				render(createElement) {
@@ -81,45 +144,13 @@ export default {
 
 		initialStrategy() {
 			let domElement = this.renderer.domElement;
-			let hover = this.hover;
-			let press = this.press;
-			let drag = this.drag;
-			let select = this.select;
+			let hover = this.populatedHover;
+			let press = this.populatedPress;
+			let drag = this.populatedDrag;
+			let select = this.populatedSelect;
 
 			if (press || drag || select) {
-				if (press) {
-					press = Object.assign({
-						distanceTolerance: 2,
-						delay: 100, // touch only
-						objectFilter: Function_stubFalse,
-						onPress: Function_noop,
-					}, press);
-				}
-				if (drag) {
-					drag = Object.assign({
-						distanceTolerance: 2,
-						delay: 100,
-						objectsFilter: Function_stubFalse,
-						onDragStart: Function_noop,
-						onDrag: Function_noop,
-						onDragEnd: Function_noop,
-					}, drag);
-				}
-				if (select) {
-					select = Object.assign({
-						shape: 'rectangle', // ellipse
-						distanceTolerance: 1,
-						delay: 100,
-						objectsFilter: Function_stubFalse,
-						interval: 200,
-						borderWidth: 1,
-						borderColor: 'rgba(0,0,0,0.5)',
-						backgroundColor: 'rgba(255,255,255,0.1)',
-						onSelectStart: Function_noop,
-						onSelect: Function_noop,
-						onSelectEnd: Function_noop,
-					}, select);
-				}
+
 				let startPointerPosition;
 				let currentPointerPosition;
 				let startTime;
@@ -278,7 +309,11 @@ export default {
 												select = false;
 											}
 										}
-										return press || drag || select;
+										if (press || drag || select) {
+											// pass
+										} else {
+											return null;
+										}
 									},
 									onMouseUp(event) {
 										if (press) {
@@ -288,23 +323,17 @@ export default {
 												}
 											}
 										}
-										return false;
+										return null;
 									},
 								};
+							} else {
+								return null;
 							}
 						}
 					},
 				};
 			}
 			if (hover) {
-				hover = Object.assign({
-					distanceTolerance: 2,
-					delay: 100, // mouse only
-					objectsFilter: Function_stubFalse,
-					interval: 200, // mouse only
-					onHoverIn: Function_noop,
-					onHoverOut: Function_noop,
-				}, hover);
 				return {
 					onMouseMove(event) {
 						let startTime = Date.now();
@@ -314,7 +343,7 @@ export default {
 							onMouseMove(event) {
 								currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
 								if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-									return false;
+									return null;
 								}
 							},
 
@@ -327,7 +356,7 @@ export default {
 										onMouseMove(event) {
 											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
 											if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-												return false;
+												return null;
 											}
 										},
 
@@ -428,12 +457,9 @@ export default {
 			}
 		},
 
-		setNextStrategy(value) {
-			if (value === false) {
-				this.currentStrategy = null;
-			} else
-			if (value) {
-				this.currentStrategy = value;
+		setNextStrategy(strategy) {
+			if (strategy !== undefined) {
+				this.currentStrategy = strategy;
 			}
 		},
 
