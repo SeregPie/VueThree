@@ -7,7 +7,9 @@
 		el: '#App',
 
 		data: {
-			backgroundColor: '#1a3041',
+			backgroundColor: '#786554',
+			primaryColor: '#63bcb8',
+			secondaryColor: '#ff5e92',
 			lightPosition: [1, 1, 1],
 			cameraPosition: defaultCameraPosition,
 			cameraQuaternion: defaultCameraQuaternion,
@@ -58,10 +60,12 @@
 			},
 
 			threeSphereHelper: function() {
+				var primaryColor = this.primaryColor;
+
 				return {
 					component: 'mySphereHelper',
 					props: {
-						color: '#a0a0a0'
+						color: primaryColor,
 					},
 				};
 			},
@@ -69,12 +73,14 @@
 			threePoints: function() {
 				var points = this.points;
 				var selectedPoints = this.selectedPoints;
+				var primaryColor = this.primaryColor;
+				var secondaryColor = this.secondaryColor;
 
 				var returns = {};
 				points.forEach(function(point, pointIndex) {
 					var threePointKey = ''+pointIndex;
 					var pointSelected = !!selectedPoints[pointIndex];
-					var threePointColor = pointSelected ? '#ff0000' : '#a0a0a0';
+					var threePointColor = pointSelected ? secondaryColor : primaryColor;
 					var threePoint = {
 						component: 'myPoint',
 						props: {
