@@ -130,8 +130,10 @@
 				this.points.splice(pointIndex, 1);
 			},
 
-			onThreePointDragStart: function() {
+			onThreePointDragStart: function(object) {
 				this.controlsEnabled = false;
+				var pointIndex = object.userData.index;
+				Vue.set(this.selectedPoints, pointIndex, true);
 			},
 
 			onThreePointDrag: function(object, position) {
@@ -139,8 +141,10 @@
 				this.points[pointIndex].position = position;
 			},
 
-			onThreePointDragEnd: function() {
+			onThreePointDragEnd: function(object) {
 				this.controlsEnabled = true;
+				var pointIndex = object.userData.index;
+				Vue.delete(this.selectedPoints, pointIndex);
 			},
 
 			onThreePointHoverIn: function(object) {
