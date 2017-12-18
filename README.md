@@ -15,7 +15,7 @@ A Vue wrapper for THREE.
 
 ## setup
 
-### NPM
+### npm
 
 ```sh
 
@@ -23,7 +23,7 @@ npm install vuethree
 
 ```
 
-### ES2015
+### ES module
 
 Register the components globally.
 
@@ -54,7 +54,7 @@ export default {
 
 ```
 
-### Browser
+### browser
 
 ```html
 
