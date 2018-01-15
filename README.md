@@ -17,136 +17,124 @@ A Vue wrapper for THREE.
 
 ### npm
 
-```sh
-
+```shell
 npm install vuethree
-
 ```
 
 ### ES module
 
 Register the components globally.
 
-```js
-
+```javascript
 import Vue from 'vue';
 import VueThree from 'vuethree';
 
 Vue.use(VueThree);
-
 ```
 
 *or*
 
 Register the components in the scope of another instance.
 
-```js
-
+```javascript
 import {Renderer, Scene} from 'vuethree';
 
 export default {
-	// ...
-	components: {
-		[Renderer.name]: Renderer,
-		[Scene.name]: Scene,
-	},
+  // ...
+  components: {
+    [Renderer.name]: Renderer,
+    [Scene.name]: Scene,
+  },
 };
-
 ```
 
 ### browser
 
 ```html
-
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/three"></script>
 <script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
 <script src="https://unpkg.com/vuethree"></script>
-
 ```
 
 If Vue is detected, the components will be registered automatically.
 
+---
+
 Include [polyfills](https://polyfill.io/) to support older browsers.
 
 ```html
-
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Object.entries,Object.values"></script>
-
 ```
 
 ## usage
 
 ```html
-
 <vue-three-renderer clear-color="#00ff00">
-	<vue-three-scene>
-		<vue-three-fog color="#ff0000"></vue-three-fog>
-		<vue-three-perspective-camera
-			:fov="75"
-			:position="cameraPosition"
-			:quaternion="cameraQuaternion"
-		></vue-three-perspective-camera>
-		<component
-			v-for="threeObject in threeObjects"
-			:key="threeObject.key"
-			:is="threeObject.component"
-			v-bind="threeObject.props"
-		></component>
-		<vue-three-point-light
-			:decay="2"
-			:position="[50, 0, 0]"
-		></vue-three-point-light>
-	</vue-three-scene>
-	<vue-three-orbit-controls
-		:camera-position.sync="cameraPosition"
-		:camera-quaternion.sync="cameraQuaternion"
-		auto-rotate
-	></vue-three-orbit-controls>
+  <vue-three-scene>
+  <vue-three-fog color="#ff0000"></vue-three-fog>
+  <vue-three-perspective-camera
+    :fov="75"
+    :position="cameraPosition"
+    :quaternion="cameraQuaternion"
+  ></vue-three-perspective-camera>
+  <component
+    v-for="threeObject in threeObjects"
+    :key="threeObject.key"
+    :is="threeObject.component"
+    v-bind="threeObject.props"
+  ></component>
+  <vue-three-point-light
+    :decay="2"
+    :position="[50, 0, 0]"
+  ></vue-three-point-light>
+  </vue-three-scene>
+  <vue-three-orbit-controls
+    :camera-position.sync="cameraPosition"
+    :camera-quaternion.sync="cameraQuaternion"
+    auto-rotate
+  ></vue-three-orbit-controls>
 </vue-three-renderer>
-
 ```
 
 ---
 
 Create custom THREE components.
 
-```js
-
+```javascript
 let MySphere = {
-	mixins: [VueThree.Object3D],
+  mixins: [VueThree.Object3D],
 
-	props: {
-		color: {},
-	},
+  props: {
+    color: {},
+  },
 
-	computed: {
-		object() {
-			return new THREE.Mesh(
-				new THREE.SphereBufferGeometry(1/2, 24, 24),
-				new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
-			);
-		},
+  computed: {
+    object() {
+      return new THREE.Mesh(
+        new THREE.SphereBufferGeometry(1/2, 24, 24),
+        new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
+      );
+    },
 
-		setMaterialEmissive() {
-			this.object.material.emissive.set(this.color);
-		},
-	},
+    setMaterialEmissive() {
+      this.object.material.emissive.set(this.color);
+    },
+  },
 
-	watch: {
-		setMaterialEmissive() {},
-	},
+  watch: {
+    setMaterialEmissive() {},
+  },
 
-	methods: {
-		dispose(object) {
-			object.geometry.dispose();
-			object.material.dispose();
-		},
-	},
+  methods: {
+    dispose(object) {
+      object.geometry.dispose();
+      object.material.dispose();
+    },
+  },
 
-	render: VueThree.Object3D.render,
+  render: VueThree.Object3D.render,
 },
-
 ```
 
 ## components
@@ -254,89 +242,81 @@ let MySphere = {
 | `drag` | `Object` | n/a |
 | `select` | `Object` | n/a |
 
-```js
-
+```javascript
 // hover
 {
-	distanceTolerance: 2,
-	delay: 100, // mouse only
-	objectFilter(object) {
-		return object.name === 'horse';
-	},
-	interval: 200, // mouse only
-	onHoverIn(hoveredObject, hoverPosition2D) {
+  distanceTolerance: 2,
+  delay: 100, // mouse only
+  objectFilter(object) {
+    return object.name === 'horse';
+  },
+  interval: 200, // mouse only
+  onHoverIn(hoveredObject, hoverPosition2D) {
 
-	},
-	onHoverOut(hoveredObject) {
+  },
+  onHoverOut(hoveredObject) {
 
-	},
+  },
 }
-
 ```
 
-```js
-
+```javascript
 // press
 {
-	distanceTolerance: 2,
-	delay: 100, // touch only
-	objectFilter(object) {
-		return object.name === 'horse';
-	},
-	onPress(pressedObject, pressPosition2D) {
+  distanceTolerance: 2,
+  delay: 100, // touch only
+  objectFilter(object) {
+    return object.name === 'horse';
+  },
+  onPress(pressedObject, pressPosition2D) {
 
-	},
+  },
 }
-
 ```
 
-```js
-
+```javascript
 // drag
 {
-	distanceTolerance: 2,
-	delay: 100,
-	objectFilter(object) {
-		return object.name === 'horse';
-	},
-	onDragStart(draggedObject, dragPosition3D, dragPosition2D) {
+  distanceTolerance: 2,
+  delay: 100,
+  objectFilter(object) {
+    return object.name === 'horse';
+  },
+  onDragStart(draggedObject, dragPosition3D, dragPosition2D) {
 
-	},
-	onDrag(draggedObject, dragPosition3D, dragPosition2D) {
+  },
+  onDrag(draggedObject, dragPosition3D, dragPosition2D) {
 
-	},
-	onDragEnd(draggedObject, dragPosition3D, dragPosition2D) {
+  },
+  onDragEnd(draggedObject, dragPosition3D, dragPosition2D) {
 
-	},
+  },
 }
-
 ```
 
-```js
-
+```javascript
 // select
 {
-	shape: 'rectangle', // or 'ellipse'
-	distanceTolerance: 1,
-	delay: 100,
-	objectFilter(object) {
-		return object.name === 'horse';
-	},
-	interval: 200,
-	borderWidth: 1,
-	borderColor: 'rgba(0,0,0,0.5)',
-	backgroundColor: 'rgba(255,255,255,0.1)',
-	onSelectStart(startSelectPosition2D, endSelectPosition2D) {
+  shape: 'rectangle', // or 'ellipse'
+  distanceTolerance: 1,
+  delay: 100,
+  objectFilter(object) {
+    return object.name === 'horse';
+  },
+  interval: 200,
+  borderWidth: 1,
+  borderColor: 'rgba(0,0,0,0.5)',
+  backgroundColor: 'rgba(255,255,255,0.1)',
+  onSelectStart(startSelectPosition2D, endSelectPosition2D) {
 
-	},
-	onSelect(selectedObjects, selectedObjectsIn, selectedObjectsOut, startSelectPosition2D, endSelectPosition2D) {
+  },
+  onSelect(selectedObjects, selectedObjectsIn, selectedObjectsOut, startSelectPosition2D, endSelectPosition2D) {
 
-	},
-	onSelectStart(selectedObjects, startSelectPosition2D, endSelectPosition2D) {
+  },
+  onSelectStart(selectedObjects, startSelectPosition2D, endSelectPosition2D) {
 
-	},
+  },
 }
-
 ```
 
 ### PointLight

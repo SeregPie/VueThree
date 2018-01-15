@@ -150,7 +150,7 @@ export default {
 
 	watch: {
 		strategy(newStrategy, oldStrategy) {
-			if (oldStrategy) {
+			if (oldStrategy && oldStrategy.onEnd) {
 				oldStrategy.onEnd.call(this);
 			}
 		},
