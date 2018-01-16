@@ -150,11 +150,12 @@ export default {
 			let drag = this.populatedDrag;
 			let select = this.populatedSelect;
 
-			if (press || drag || select) {
+			if (hover || press || drag || select) {
 				let startPointerPosition;
 				let currentPointerPosition;
 				let startTime;
 				let currentTime;
+				let hoveredObject;
 				let pressedObject;
 				let draggedObject;
 				let draggedObjectOriginalPosition;
@@ -165,6 +166,58 @@ export default {
 				let selectedObjectsOut;
 				let previousIntersect;
 				return {
+					onMouseMove(event) {
+						let startTime = Date.now();
+						let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+						let currentPointerPosition;
+						return {
+							onMouseMove(event) {
+								currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+								if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
+									return null;
+								}
+							},
+							onMouseDown: Function_stubNull,
+							onMouseUp: Function_stubNull,
+							onTick() {
+								currentTime = Date.now();
+								if (currentTime - startTime > hover.delay) {
+									let previousIntersect = 0;
+									return {
+										onMouseMove(event) {
+											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+											if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
+												return null;
+											}
+										},
+										onMouseDown: Function_stubNull,
+										onMouseUp: Function_stubNull,
+										onTick() {
+											currentTime = Date.now();
+											if (currentTime - previousIntersect > hover.interval) {
+												previousIntersect = currentTime;
+												let [newHoveredObject] = this.intersectPoint(currentPointerPosition, hover.objectFilter);
+												if (newHoveredObject !== hoveredObject) {
+													if (hoveredObject) {
+														hover.onHoverOut(hoveredObject);
+													}
+													if (newHoveredObject) {
+														hoveredObject = newHoveredObject;
+														hover.onHoverIn(hoveredObject, currentPointerPosition.toArray());
+													}
+												}
+											}
+										},
+										onEnd() {
+											if (hoveredObject) {
+												hover.onHoverOut(hoveredObject);
+											}
+										},
+									};
+								}
+							},
+						};
+					},
 					onMouseDown(event) {
 						return ((press, drag, select) => {
 							if (event.which === 1 && event.target === domElement) {
@@ -329,62 +382,6 @@ export default {
 								}
 							}
 						})(press, drag, select);
-					},
-				};
-			}
-			if (hover) {
-				return {
-					onMouseMove(event) {
-						let startTime = Date.now();
-						let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-						let currentPointerPosition = startPointerPosition;
-						return {
-							onMouseMove(event) {
-								currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-								if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-									return null;
-								}
-							},
-
-							onTick() {
-								let currentTime = Date.now();
-								if (currentTime - startTime > hover.delay) {
-									let hoveredObject;
-									let previousIntersect = 0;
-									return {
-										onMouseMove(event) {
-											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-											if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-												return null;
-											}
-										},
-
-										onTick() {
-											let currentTime = Date.now();
-											if (currentTime - previousIntersect > hover.interval) {
-												previousIntersect = currentTime;
-												let [object] = this.intersectPoint(currentPointerPosition, hover.objectFilter);
-												if (hoveredObject !== object) {
-													if (hoveredObject) {
-														hover.onHoverOut(hoveredObject);
-													}
-													if (object) {
-														hoveredObject = object;
-														hover.onHoverIn(hoveredObject, currentPointerPosition.toArray());
-													}
-												}
-											}
-										},
-
-										onEnd() {
-											if (hoveredObject) {
-												hover.onHoverOut(hoveredObject);
-											}
-										},
-									};
-								}
-							},
-						};
 					},
 				};
 			}
