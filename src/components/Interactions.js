@@ -127,10 +127,6 @@ export default {
 		},
 
 		strategy() {
-			return this.currentStrategy || this.getInitialStrategy();
-		},
-
-		populatedStrategy() {
 			return Object.assign({
 				render(createElement) {
 					return createElement('div');
@@ -144,85 +140,10 @@ export default {
 				onTick: Function_noop,
 				onEnd: Function_noop,
 				//controlsEnabled: true,
-			}, this.strategy);
-		},
-	},
-
-	watch: {
-		strategy(newStrategy, oldStrategy) {
-			if (oldStrategy && oldStrategy.onEnd) {
-				oldStrategy.onEnd.call(this);
-			}
-		},
-	},
-
-	mounted() {
-		window.addEventListener('touchstart', this.touchStartEventListener);
-		window.addEventListener('touchmove', this.touchMoveEventListener);
-		window.addEventListener('touchend', this.touchEndEventListener);
-		window.addEventListener('mousemove', this.mouseMoveEventListener);
-		window.addEventListener('mousedown', this.mouseDownEventListener);
-		window.addEventListener('mouseup', this.mouseUpEventListener);
-		this.startTicking();
-	},
-
-	beforeDestroy() {
-		window.removeEventListener('touchstart', this.touchStartEventListener);
-		window.removeEventListener('touchmove', this.touchMoveEventListener);
-		window.removeEventListener('touchend', this.touchEndEventListener);
-		window.removeEventListener('mousemove', this.mouseMoveEventListener);
-		window.removeEventListener('mousedown', this.mouseDownEventListener);
-		window.removeEventListener('mouseup', this.mouseUpEventListener);
-	},
-
-	methods: {
-		onTouchStart(event) {
-			this.setNextStrategy(this.populatedStrategy.onTouchStart.call(this, event));
+			}, this.currentStrategy || this.initialStrategy);
 		},
 
-		onTouchMove(event) {
-			this.setNextStrategy(this.populatedStrategy.onTouchMove.call(this, event));
-		},
-
-		onTouchEnd(event) {
-			this.setNextStrategy(this.populatedStrategy.onTouchEnd.call(this, event));
-		},
-
-		onMouseMove(event) {
-			this.setNextStrategy(this.populatedStrategy.onMouseMove.call(this, event));
-		},
-
-		onMouseDown(event) {
-			this.setNextStrategy(this.populatedStrategy.onMouseDown.call(this, event));
-		},
-
-		onMouseUp(event) {
-			this.setNextStrategy(this.populatedStrategy.onMouseUp.call(this, event));
-		},
-
-		onTick() {
-			this.setNextStrategy(this.populatedStrategy.onTick.call(this));
-		},
-
-		startTicking() {
-			if (!this._isDestroyed) {
-				requestAnimationFrame(() => {
-					this.startTicking();
-				});
-				this.onTick();
-			}
-		},
-
-		setNextStrategy(strategy) {
-			if (strategy === null) {
-				this.currentStrategy = this.getInitialStrategy();
-			} else
-			if (strategy) {
-				this.currentStrategy = strategy;
-			}
-		},
-
-		getInitialStrategy() {
+		initialStrategy() {
 			let domElement = this.renderer.domElement;
 			let hover = this.populatedHover;
 			let press = this.populatedPress;
@@ -230,7 +151,6 @@ export default {
 			let select = this.populatedSelect;
 
 			if (press || drag || select) {
-
 				let startPointerPosition;
 				let currentPointerPosition;
 				let startTime;
@@ -244,177 +164,174 @@ export default {
 				let selectedObjectsIn;
 				let selectedObjectsOut;
 				let previousIntersect;
-
 				return {
 					onMouseDown(event) {
-						if (event.which === 1 && event.target === domElement) {
-							startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-							if (press) {
-								([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
-								if (!pressedObject) {
-									press = false;
-								}
-							}
-							if (drag) {
-								([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
-								if (draggedObject) {
-									draggedObjectOriginalPosition = draggedObject.position.clone();
-									if (select) {
-										select = false;
+						return ((press, drag, select) => {
+							if (event.which === 1 && event.target === domElement) {
+								startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+								if (press) {
+									([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
+									if (!pressedObject) {
+										press = false;
 									}
-								} else {
-									drag = false;
+								}
+								if (drag) {
+									([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
+									if (draggedObject) {
+										draggedObjectOriginalPosition = draggedObject.position.clone();
+										select = false;
+									} else {
+										drag = false;
+									}
+								}
+								if (press || drag || select) {
+									currentPointerPosition = startPointerPosition;
+									startTime = Date.now();
+									return {
+										onMouseMove(event) {
+											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+											currentTime = Date.now();
+											if (drag) {
+												if (currentTime - startTime > drag.delay) {
+													currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+													draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
+													drag.onDragStart(draggedObject, currentPointerPosition.toArray());
+													drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+													return {
+														onMouseMove(event) {
+															currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+															draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
+															drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+														},
+														onMouseDown: Function_stubNull,
+														onMouseUp: Function_stubNull,
+														onEnd() {
+															drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+														},
+														//controlsEnabled: false,
+													};
+												}
+											}
+											if (select) {
+												if (currentTime - startTime > select.delay) {
+													currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+													previousIntersect = currentTime;
+													switch (select.shape) {
+														case 'rectangle': {
+															selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+															break;
+														}
+														case 'ellipse': {
+															selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+															break;
+														}
+													}
+													previousSelectedObjects = [];
+													selectedObjectsIn = selectedObjects;
+													selectedObjectsOut = previousSelectedObjects;
+													select.onSelectStart(startPointerPosition.toArray(), currentPointerPosition.toArray());
+													select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
+													return {
+														render(createElement) {
+															let startPosition = getToElementPercentageRelativePosition(startPointerPosition, domElement);
+															let endPosition = getToElementPercentageRelativePosition(currentPointerPosition, domElement);
+															let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
+															let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
+															let areaStyle = {
+																backgroundColor: select.backgroundColor,
+																border: `${select.borderWidth}px solid ${select.borderColor}`,
+																boxSizing: 'border-box',
+																height: `${areaSize.y * 100}%`,
+																left: `${areaPosition.x * 100}%`,
+																position: 'absolute',
+																top: `${areaPosition.y * 100}%`,
+																width: `${areaSize.x * 100}%`,
+															};
+															if (select.shape === 'ellipse') {
+																areaStyle.borderRadius = '100%';
+															}
+															return createElement('div', {
+																style: {
+																	bottom: 0,
+																	left: 0,
+																	overflow: 'hidden',
+																	position: 'absolute',
+																	right: 0,
+																	top: 0,
+																},
+															}, [createElement('div', {style: areaStyle})]);
+														},
+														onMouseMove(event) {
+															currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+															this.rerender();
+														},
+														onMouseDown: Function_stubNull,
+														onMouseUp: Function_stubNull,
+														onTick() {
+															currentTime = Date.now();
+															if (currentTime - previousIntersect > select.interval) {
+																previousIntersect = currentTime;
+																previousSelectedObjects = selectedObjects;
+																switch (select.shape) {
+																	case 'rectangle': {
+																		selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+																		break;
+																	}
+																	case 'ellipse': {
+																		selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+																		break;
+																	}
+																}
+																selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
+																selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
+																if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
+																	select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
+																}
+															}
+														},
+														onEnd() {
+															select.onSelectEnd(selectedObjects, startPointerPosition.toArray(), currentPointerPosition.toArray());
+														},
+														//controlsEnabled: false,
+													};
+												}
+											}
+											if (press) {
+												if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
+													press = false;
+												}
+											}
+											if (drag) {
+												if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
+													drag = false;
+												}
+											}
+											if (select) {
+												if (currentPointerPosition.distanceTo(startPointerPosition) > select.distanceTolerance) {
+													select = false;
+												}
+											}
+											if (press || drag || select) {
+												// pass
+											} else {
+												return null;
+											}
+										},
+										onMouseDown: Function_stubNull,
+										onMouseUp(event) {
+											if (press) {
+												if (event.which === 1) {
+													if (this.intersectObject(currentPointerPosition, pressedObject)) {
+														press.onPress(pressedObject, currentPointerPosition.toArray());
+													}
+												}
+											}
+											return null;
+										},
+									};
 								}
 							}
-							if (press || drag || select) {
-								currentPointerPosition = startPointerPosition;
-								startTime = Date.now();
-								return {
-									onMouseMove(event) {
-										currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-										currentTime = Date.now();
-										if (drag) {
-											if (currentTime - startTime > drag.delay) {
-												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-												draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
-												drag.onDragStart(draggedObject, currentPointerPosition.toArray());
-												drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-												return {
-													onMouseMove(event) {
-														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-														draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
-														drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-													},
-													onMouseDown: Function_stubNull,
-													onMouseUp: Function_stubNull,
-													onEnd() {
-														drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-													},
-													//controlsEnabled: false,
-												};
-											}
-										}
-										if (select) {
-											if (currentTime - startTime > select.delay) {
-												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-												previousIntersect = currentTime;
-												switch (select.shape) {
-													case 'rectangle': {
-														selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
-														break;
-													}
-													case 'ellipse': {
-														selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
-														break;
-													}
-												}
-												previousSelectedObjects = [];
-												selectedObjectsIn = selectedObjects;
-												selectedObjectsOut = previousSelectedObjects;
-												select.onSelectStart(startPointerPosition.toArray(), currentPointerPosition.toArray());
-												select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
-												return {
-													render(createElement) {
-														let startPosition = getToElementPercentageRelativePosition(startPointerPosition, domElement);
-														let endPosition = getToElementPercentageRelativePosition(currentPointerPosition, domElement);
-														let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
-														let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
-														let areaStyle = {
-															backgroundColor: select.backgroundColor,
-															border: `${select.borderWidth}px solid ${select.borderColor}`,
-															boxSizing: 'border-box',
-															height: `${areaSize.y * 100}%`,
-															left: `${areaPosition.x * 100}%`,
-															position: 'absolute',
-															top: `${areaPosition.y * 100}%`,
-															width: `${areaSize.x * 100}%`,
-														};
-														if (select.shape === 'ellipse') {
-															areaStyle.borderRadius = '100%';
-														}
-														return createElement('div', {
-															style: {
-																bottom: 0,
-																left: 0,
-																overflow: 'hidden',
-																position: 'absolute',
-																right: 0,
-																top: 0,
-															},
-														}, [createElement('div', {style: areaStyle})]);
-													},
-													onMouseMove(event) {
-														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-														this.rerender();
-													},
-													onMouseDown: Function_stubNull,
-													onMouseUp: Function_stubNull,
-													onTick() {
-														currentTime = Date.now();
-														if (currentTime - previousIntersect > select.interval) {
-															previousIntersect = currentTime;
-															previousSelectedObjects = selectedObjects;
-															switch (select.shape) {
-																case 'rectangle': {
-																	selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
-																	break;
-																}
-																case 'ellipse': {
-																	selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
-																	break;
-																}
-															}
-															selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
-															selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
-															if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
-																select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
-															}
-														}
-													},
-													onEnd() {
-														select.onSelectEnd(selectedObjects, startPointerPosition.toArray(), currentPointerPosition.toArray());
-													},
-													//controlsEnabled: false,
-												};
-											}
-										}
-										if (press) {
-											if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
-												press = false;
-											}
-										}
-										if (drag) {
-											if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
-												drag = false;
-											}
-										}
-										if (select) {
-											if (currentPointerPosition.distanceTo(startPointerPosition) > select.distanceTolerance) {
-												select = false;
-											}
-										}
-										if (press || drag || select) {
-											// pass
-										} else {
-											return null;
-										}
-									},
-									onMouseDown: Function_stubNull,
-									onMouseUp(event) {
-										if (press) {
-											if (event.which === 1) {
-												if (this.intersectObject(currentPointerPosition, pressedObject)) {
-													press.onPress(pressedObject, currentPointerPosition.toArray());
-												}
-											}
-										}
-										return null;
-									},
-								};
-							} else {
-								return null;
-							}
-						}
+						})(press, drag, select);
 					},
 				};
 			}
@@ -473,6 +390,78 @@ export default {
 						};
 					},
 				};
+			}
+		},
+	},
+
+	watch: {
+		strategy(newStrategy, oldStrategy) {
+			if (oldStrategy) {
+				oldStrategy.onEnd.call(this);
+			}
+		},
+	},
+
+	mounted() {
+		window.addEventListener('touchstart', this.touchStartEventListener);
+		window.addEventListener('touchmove', this.touchMoveEventListener);
+		window.addEventListener('touchend', this.touchEndEventListener);
+		window.addEventListener('mousemove', this.mouseMoveEventListener);
+		window.addEventListener('mousedown', this.mouseDownEventListener);
+		window.addEventListener('mouseup', this.mouseUpEventListener);
+		this.startTicking();
+	},
+
+	beforeDestroy() {
+		window.removeEventListener('touchstart', this.touchStartEventListener);
+		window.removeEventListener('touchmove', this.touchMoveEventListener);
+		window.removeEventListener('touchend', this.touchEndEventListener);
+		window.removeEventListener('mousemove', this.mouseMoveEventListener);
+		window.removeEventListener('mousedown', this.mouseDownEventListener);
+		window.removeEventListener('mouseup', this.mouseUpEventListener);
+	},
+
+	methods: {
+		onTouchStart(event) {
+			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
+		},
+
+		onTouchMove(event) {
+			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
+		},
+
+		onTouchEnd(event) {
+			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
+		},
+
+		onMouseMove(event) {
+			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
+		},
+
+		onMouseDown(event) {
+			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
+		},
+
+		onMouseUp(event) {
+			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
+		},
+
+		onTick() {
+			this.setNextStrategy(this.strategy.onTick.call(this));
+		},
+
+		startTicking() {
+			if (!this._isDestroyed) {
+				requestAnimationFrame(() => {
+					this.startTicking();
+				});
+				this.onTick();
+			}
+		},
+
+		setNextStrategy(strategy) {
+			if (strategy !== undefined) {
+				this.currentStrategy = strategy;
 			}
 		},
 
@@ -542,6 +531,6 @@ export default {
 
 	render(createElement) {
 		let renderClock = this.renderClock;
-		return this.populatedStrategy.render(createElement);
+		return this.strategy.render(createElement);
 	},
 };

@@ -1,8 +1,8 @@
 import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
-import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
 import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
+import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
 
 export default {
 	name: 'VueThreeOrbitControls',
