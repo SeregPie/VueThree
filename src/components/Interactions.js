@@ -69,7 +69,7 @@ export default {
 			if (hover) {
 				return Object.assign({
 					distanceTolerance: 2,
-					delay: 100, // mouse only
+					delay: 200, // mouse only
 					objectsFilter: Function_stubFalse,
 					interval: 200, // mouse only
 					onHoverIn: Function_noop,
@@ -84,7 +84,7 @@ export default {
 			if (press) {
 				return Object.assign({
 					distanceTolerance: 2,
-					delay: 100, // touch only
+					delay: 200, // touch only
 					objectFilter: Function_stubFalse,
 					onPress: Function_noop,
 				}, press);
@@ -97,7 +97,7 @@ export default {
 			if (drag) {
 				return Object.assign({
 					distanceTolerance: 2,
-					delay: 100,
+					delay: 200,
 					objectsFilter: Function_stubFalse,
 					onDragStart: Function_noop,
 					onDrag: Function_noop,
@@ -113,7 +113,7 @@ export default {
 				return Object.assign({
 					shape: 'rectangle', // ellipse
 					distanceTolerance: 1,
-					delay: 100,
+					delay: 200,
 					objectsFilter: Function_stubFalse,
 					interval: 200,
 					borderWidth: 1,
@@ -194,9 +194,7 @@ export default {
 											if (drag) {
 												if (currentTime - startTime > drag.delay) {
 													currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-													draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
 													drag.onDragStart(draggedObject, currentPointerPosition.toArray());
-													drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
 													return {
 														onMouseMove(event) {
 															currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
@@ -317,7 +315,6 @@ export default {
 												return null;
 											}
 										},
-										onMouseDown: Function_stubNull,
 										onMouseUp(event) {
 											if (press) {
 												if (event.which === 1) {
@@ -394,14 +391,6 @@ export default {
 		},
 	},
 
-	watch: {
-		strategy(newStrategy, oldStrategy) {
-			if (oldStrategy) {
-				oldStrategy.onEnd.call(this);
-			}
-		},
-	},
-
 	mounted() {
 		window.addEventListener('touchstart', this.touchStartEventListener);
 		window.addEventListener('touchmove', this.touchMoveEventListener);
@@ -423,31 +412,73 @@ export default {
 
 	methods: {
 		onTouchStart(event) {
-			this.setNextStrategy(this.strategy.onTouchStart.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onTouchStart.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onTouchStart(event);
+			}
 		},
 
 		onTouchMove(event) {
-			this.setNextStrategy(this.strategy.onTouchMove.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onTouchMove.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onTouchMove(event);
+			}
 		},
 
 		onTouchEnd(event) {
-			this.setNextStrategy(this.strategy.onTouchEnd.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onTouchEnd.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onTouchEnd(event);
+			}
 		},
 
 		onMouseMove(event) {
-			this.setNextStrategy(this.strategy.onMouseMove.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onMouseMove.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onMouseMove(event);
+			}
 		},
 
 		onMouseDown(event) {
-			this.setNextStrategy(this.strategy.onMouseDown.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onMouseDown.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onMouseDown(event);
+			}
 		},
 
 		onMouseUp(event) {
-			this.setNextStrategy(this.strategy.onMouseUp.call(this, event));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onMouseUp.call(this, event);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onMouseUp(event);
+			}
 		},
 
 		onTick() {
-			this.setNextStrategy(this.strategy.onTick.call(this));
+			let oldStrategy = this.strategy;
+			let newStrategy = oldStrategy.onTick.call(this);
+			if (newStrategy !== undefined) {
+				oldStrategy.onEnd.call(this);
+				this.currentStrategy = newStrategy;
+				this.onTick();
+			}
 		},
 
 		startTicking() {
@@ -456,12 +487,6 @@ export default {
 					this.startTicking();
 				});
 				this.onTick();
-			}
-		},
-
-		setNextStrategy(strategy) {
-			if (strategy !== undefined) {
-				this.currentStrategy = strategy;
 			}
 		},
 
