@@ -2,7 +2,7 @@ import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
 
-export default {
+let VueThreeRenderer = {
 	name: 'VueThreeRenderer',
 
 	props: {
@@ -106,27 +106,6 @@ export default {
 
 	watch: {},
 
-	beforeCreate() {
-		Object.entries({
-			setSize() {
-				this.renderer.setSize(this.containerWidth, this.containerHeight);
-				if (this.containerWidth > 0 && this.containerHeight > 0) {
-					if (this.camera) {
-						this.camera.aspect = this.containerWidth / this.containerHeight;
-						this.camera.updateProjectionMatrix();
-					}
-				}
-			},
-
-			setClearColor() {
-				this.renderer.setClearColor(this.clearColor, this.clearAlpha);
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
 	mounted() {
 		this.$refs.container.appendChild(this.renderer.domElement);
 		this.startToUpdateContainerSize();
@@ -179,3 +158,25 @@ export default {
 		);
 	},
 };
+
+Object.entries({
+	setSize() {
+		this.renderer.setSize(this.containerWidth, this.containerHeight);
+		if (this.containerWidth > 0 && this.containerHeight > 0) {
+			if (this.camera) {
+				this.camera.aspect = this.containerWidth / this.containerHeight;
+				this.camera.updateProjectionMatrix();
+			}
+		}
+	},
+
+	setClearColor() {
+		this.renderer.setClearColor(this.clearColor, this.clearAlpha);
+	},
+}).forEach(([key, fn]) => {
+	VueThreeRenderer.computed[key] = fn;
+	VueThreeRenderer.watch[key] = Function_noop;
+});
+
+
+export default VueThreeRenderer;

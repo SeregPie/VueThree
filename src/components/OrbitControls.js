@@ -4,7 +4,7 @@ import Function_noop from '../helpers/Function/noop';
 import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
 
-export default {
+let VueThreeOrbitControls = {
 	name: 'VueThreeOrbitControls',
 
 	props: {
@@ -176,94 +176,6 @@ export default {
 		},
 	},
 
-
-	beforeCreate() {
-		Object.entries({
-			setEnabled() {
-				this.controls.enabled = this.enabled;
-			},
-
-			setMinDistance() {
-				this.controls.minDistance = this.minDistance;
-			},
-
-			setMaxDistance() {
-				this.controls.maxDistance = this.maxDistance;
-			},
-
-			setMinZoom() {
-				this.controls.minZoom = this.minZoom;
-			},
-
-			setMaxZoom() {
-				this.controls.maxZoom = this.maxZoom;
-			},
-
-			setMinPolarAngle() {
-				this.controls.minPolarAngle = this.minPolarAngle;
-			},
-
-			setMaxPolarAngle() {
-				this.controls.maxPolarAngle = this.maxPolarAngle;
-			},
-
-			setMinAzimuthAngle() {
-				this.controls.minAzimuthAngle = this.minAzimuthAngle;
-			},
-
-			setMaxAzimuthAngle() {
-				this.controls.maxAzimuthAngle = this.maxAzimuthAngle;
-			},
-
-			setEnableDamping() {
-				this.controls.enableDamping = this.enableDamping;
-			},
-
-			setDampingFactor() {
-				this.controls.dampingFactor = this.dampingFactor;
-			},
-
-			setEnableZoom() {
-				this.controls.enableZoom = this.enableZoom;
-			},
-
-			setZoomSpeed() {
-				this.controls.zoomSpeed = this.zoomSpeed;
-			},
-
-			setEnableRotate() {
-				this.controls.enableRotate = this.enableRotate;
-			},
-
-			setRotateSpeed() {
-				this.controls.rotateSpeed = this.rotateSpeed;
-			},
-
-			setEnablePan() {
-				this.controls.enablePan = this.enablePan;
-			},
-
-			setKeyPanSpeed() {
-				this.controls.keyPanSpeed = this.keyPanSpeed;
-			},
-
-			setAutoRotate() {
-				this.controls.autoRotate = this.autoRotate;
-			},
-
-			setAutoRotateSpeed() {
-				this.controls.autoRotateSpeed = this.autoRotateSpeed;
-			},
-
-			setEnableKeys() {
-				this.controls.enableKeys = this.enableKeys;
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
 	mounted() {
 		this.startToUpdateControls();
 	},
@@ -303,3 +215,90 @@ export default {
 		return createElement('div');
 	},
 };
+
+Object.entries({
+	setEnabled() {
+		this.controls.enabled = this.enabled;
+	},
+
+	setMinDistance() {
+		this.controls.minDistance = this.minDistance;
+	},
+
+	setMaxDistance() {
+		this.controls.maxDistance = this.maxDistance;
+	},
+
+	setMinZoom() {
+		this.controls.minZoom = this.minZoom;
+	},
+
+	setMaxZoom() {
+		this.controls.maxZoom = this.maxZoom;
+	},
+
+	setMinPolarAngle() {
+		this.controls.minPolarAngle = this.minPolarAngle;
+	},
+
+	setMaxPolarAngle() {
+		this.controls.maxPolarAngle = this.maxPolarAngle;
+	},
+
+	setMinAzimuthAngle() {
+		this.controls.minAzimuthAngle = this.minAzimuthAngle;
+	},
+
+	setMaxAzimuthAngle() {
+		this.controls.maxAzimuthAngle = this.maxAzimuthAngle;
+	},
+
+	setEnableDamping() {
+		this.controls.enableDamping = this.enableDamping;
+	},
+
+	setDampingFactor() {
+		this.controls.dampingFactor = this.dampingFactor;
+	},
+
+	setEnableZoom() {
+		this.controls.enableZoom = this.enableZoom;
+	},
+
+	setZoomSpeed() {
+		this.controls.zoomSpeed = this.zoomSpeed;
+	},
+
+	setEnableRotate() {
+		this.controls.enableRotate = this.enableRotate;
+	},
+
+	setRotateSpeed() {
+		this.controls.rotateSpeed = this.rotateSpeed;
+	},
+
+	setEnablePan() {
+		this.controls.enablePan = this.enablePan;
+	},
+
+	setKeyPanSpeed() {
+		this.controls.keyPanSpeed = this.keyPanSpeed;
+	},
+
+	setAutoRotate() {
+		this.controls.autoRotate = this.autoRotate;
+	},
+
+	setAutoRotateSpeed() {
+		this.controls.autoRotateSpeed = this.autoRotateSpeed;
+	},
+
+	setEnableKeys() {
+		this.controls.enableKeys = this.enableKeys;
+	},
+}).forEach(([key, fn]) => {
+	VueThreeOrbitControls.computed[key] = fn;
+	VueThreeOrbitControls.watch[key] = Function_noop;
+});
+
+export default VueThreeOrbitControls;

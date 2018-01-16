@@ -4,7 +4,7 @@ import Function_noop from '../helpers/Function/noop';
 import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
 import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
 
-export default {
+let VueThreeObject = {
 	name: 'VueThreeObject',
 
 	props: {
@@ -58,33 +58,6 @@ export default {
 		},
 	},
 
-	beforeCreate() {
-		Object.entries({
-			setPosition() {
-				THREE_Vector3_setFrom(this.object.position, this.position);
-			},
-
-			setQuaternion() {
-				THREE_Quaternion_setFrom(this.object.quaternion, this.quaternion);
-			},
-
-			setScale() {
-				THREE_Vector3_setFrom(this.object.scale, this.scale);
-			},
-
-			setName() {
-				this.object.name = this.name;
-			},
-
-			setUserData() {
-				this.object.userData = this.userData;
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
 	beforeDestroy() {
 		this.$parent.object.remove(this.object);
 		this.dispose(this.object);
@@ -98,3 +71,30 @@ export default {
 		return createElement('div', this.$slots.default);
 	},
 };
+
+Object.entries({
+	setPosition() {
+		THREE_Vector3_setFrom(this.object.position, this.position);
+	},
+
+	setQuaternion() {
+		THREE_Quaternion_setFrom(this.object.quaternion, this.quaternion);
+	},
+
+	setScale() {
+		THREE_Vector3_setFrom(this.object.scale, this.scale);
+	},
+
+	setName() {
+		this.object.name = this.name;
+	},
+
+	setUserData() {
+		this.object.userData = this.userData;
+	},
+}).forEach(([key, fn]) => {
+	VueThreeObject.computed[key] = fn;
+	VueThreeObject.watch[key] = Function_noop;
+});
+
+export default VueThreeObject;

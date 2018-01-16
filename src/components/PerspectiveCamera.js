@@ -4,7 +4,7 @@ import Function_noop from '../helpers/Function/noop';
 
 import Object3D from './Object3D';
 
-export default {
+let VueThreePerspectiveCamera = {
 	name: 'VueThreePerspectiveCamera',
 
 	mixins: [Object3D],
@@ -32,28 +32,28 @@ export default {
 
 	watch: {},
 
-	beforeCreate() {
-		Object.entries({
-			setFov() {
-				this.object.fov = this.fov;
-			},
-
-			setNear() {
-				this.object.near = this.near;
-			},
-
-			setFar() {
-				this.object.far = this.far;
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
 	created() {
 		this.$parent.$parent.camera = this.object;
 	},
 
 	render: Object3D.render,
 };
+
+Object.entries({
+	setFov() {
+		this.object.fov = this.fov;
+	},
+
+	setNear() {
+		this.object.near = this.near;
+	},
+
+	setFar() {
+		this.object.far = this.far;
+	},
+}).forEach(([key, fn]) => {
+	VueThreePerspectiveCamera.computed[key] = fn;
+	VueThreePerspectiveCamera.watch[key] = Function_noop;
+});
+
+export default VueThreePerspectiveCamera
