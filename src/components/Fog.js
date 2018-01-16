@@ -2,7 +2,7 @@ import THREE from 'three';
 
 import Function_noop from '../helpers/Function/noop';
 
-export default {
+let VueThreeFog = {
 	name: 'VueThreeFog',
 
 	props: {
@@ -32,25 +32,6 @@ export default {
 		this.$parent.object.fog = this.fog;
 	},
 
-	beforeCreate() {
-		Object.entries({
-			setColor() {
-				this.fog.color.set(this.color);
-			},
-
-			setNear() {
-				this.fog.near = this.near;
-			},
-
-			setFar() {
-				this.fog.far = this.far;
-			},
-		}).forEach(([key, fn]) => {
-			this.$options.computed[key] = fn;
-			this.$options.watch[key] = Function_noop;
-		});
-	},
-
 	beforeDestroy() {
 		this.$parent.object.fog = null;
 	},
@@ -59,3 +40,22 @@ export default {
 		return createElement('div');
 	},
 };
+
+Object.entries({
+	setColor() {
+		this.fog.color.set(this.color);
+	},
+
+	setNear() {
+		this.fog.near = this.near;
+	},
+
+	setFar() {
+		this.fog.far = this.far;
+	},
+}).forEach(([key, fn]) => {
+	VueThreeFog.computed[key] = fn;
+	VueThreeFog.watch[key] = Function_noop;
+});
+
+export default VueThreeFog;
