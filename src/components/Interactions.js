@@ -167,221 +167,225 @@ export default {
 				let previousIntersect;
 				return {
 					onMouseMove(event) {
-						let startTime = Date.now();
-						let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-						let currentPointerPosition;
-						return {
-							onMouseMove(event) {
-								currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-								if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-									return null;
-								}
-							},
-							onMouseDown: Function_stubNull,
-							onMouseUp: Function_stubNull,
-							onTick() {
-								currentTime = Date.now();
-								if (currentTime - startTime > hover.delay) {
-									let previousIntersect = 0;
-									return {
-										onMouseMove(event) {
-											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-											if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
-												return null;
-											}
-										},
-										onMouseDown: Function_stubNull,
-										onMouseUp: Function_stubNull,
-										onTick() {
-											currentTime = Date.now();
-											if (currentTime - previousIntersect > hover.interval) {
-												previousIntersect = currentTime;
-												let [newHoveredObject] = this.intersectPoint(currentPointerPosition, hover.objectFilter);
-												if (newHoveredObject !== hoveredObject) {
-													if (hoveredObject) {
-														hover.onHoverOut(hoveredObject);
-													}
-													if (newHoveredObject) {
-														hoveredObject = newHoveredObject;
-														hover.onHoverIn(hoveredObject, currentPointerPosition.toArray());
+						if (hover) {
+							let startTime = Date.now();
+							let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+							let currentPointerPosition;
+							return {
+								onMouseMove(event) {
+									currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+									if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
+										return null;
+									}
+								},
+								onMouseDown: Function_stubNull,
+								onMouseUp: Function_stubNull,
+								onTick() {
+									currentTime = Date.now();
+									if (currentTime - startTime > hover.delay) {
+										let previousIntersect = 0;
+										return {
+											onMouseMove(event) {
+												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
+													return null;
+												}
+											},
+											onMouseDown: Function_stubNull,
+											onMouseUp: Function_stubNull,
+											onTick() {
+												currentTime = Date.now();
+												if (currentTime - previousIntersect > hover.interval) {
+													previousIntersect = currentTime;
+													let [newHoveredObject] = this.intersectPoint(currentPointerPosition, hover.objectFilter);
+													if (newHoveredObject !== hoveredObject) {
+														if (hoveredObject) {
+															hover.onHoverOut(hoveredObject);
+														}
+														if (newHoveredObject) {
+															hoveredObject = newHoveredObject;
+															hover.onHoverIn(hoveredObject, currentPointerPosition.toArray());
+														}
 													}
 												}
-											}
-										},
-										onEnd() {
-											if (hoveredObject) {
-												hover.onHoverOut(hoveredObject);
-											}
-										},
-									};
-								}
-							},
-						};
+											},
+											onEnd() {
+												if (hoveredObject) {
+													hover.onHoverOut(hoveredObject);
+												}
+											},
+										};
+									}
+								},
+							};
+						}
 					},
 					onMouseDown(event) {
-						return ((press, drag, select) => {
-							if (event.which === 1 && event.target === domElement) {
-								startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-								if (press) {
-									([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
-									if (!pressedObject) {
-										press = false;
+						if (press || drag || select) {
+							return ((press, drag, select) => {
+								if (event.which === 1 && event.target === domElement) {
+									startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+									if (press) {
+										([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
+										if (!pressedObject) {
+											press = false;
+										}
 									}
-								}
-								if (drag) {
-									([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
-									if (draggedObject) {
-										draggedObjectOriginalPosition = draggedObject.position.clone();
-										select = false;
-									} else {
-										drag = false;
+									if (drag) {
+										([draggedObject] = this.intersectPoint(startPointerPosition, drag.objectFilter));
+										if (draggedObject) {
+											draggedObjectOriginalPosition = draggedObject.position.clone();
+											select = false;
+										} else {
+											drag = false;
+										}
 									}
-								}
-								if (press || drag || select) {
-									currentPointerPosition = startPointerPosition;
-									startTime = Date.now();
-									return {
-										onMouseMove(event) {
-											currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-											currentTime = Date.now();
-											if (drag) {
-												if (currentTime - startTime > drag.delay) {
-													currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-													drag.onDragStart(draggedObject, currentPointerPosition.toArray());
-													return {
-														onMouseMove(event) {
-															currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-															draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
-															drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-														},
-														onMouseDown: Function_stubNull,
-														onMouseUp: Function_stubNull,
-														onEnd() {
-															drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
-														},
-														//controlsEnabled: false,
-													};
-												}
-											}
-											if (select) {
-												if (currentTime - startTime > select.delay) {
-													currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-													previousIntersect = currentTime;
-													switch (select.shape) {
-														case 'rectangle': {
-															selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
-															break;
-														}
-														case 'ellipse': {
-															selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
-															break;
-														}
+									if (press || drag || select) {
+										currentPointerPosition = startPointerPosition;
+										startTime = Date.now();
+										return {
+											onMouseMove(event) {
+												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												currentTime = Date.now();
+												if (drag) {
+													if (currentTime - startTime > drag.delay) {
+														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+														drag.onDragStart(draggedObject, currentPointerPosition.toArray());
+														return {
+															onMouseMove(event) {
+																currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+																draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
+																drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+															},
+															onMouseDown: Function_stubNull,
+															onMouseUp: Function_stubNull,
+															onEnd() {
+																drag.onDragEnd(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
+															},
+															//controlsEnabled: false,
+														};
 													}
-													previousSelectedObjects = [];
-													selectedObjectsIn = selectedObjects;
-													selectedObjectsOut = previousSelectedObjects;
-													select.onSelectStart(startPointerPosition.toArray(), currentPointerPosition.toArray());
-													select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
-													return {
-														render(createElement) {
-															let startPosition = getToElementPercentageRelativePosition(startPointerPosition, domElement);
-															let endPosition = getToElementPercentageRelativePosition(currentPointerPosition, domElement);
-															let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
-															let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
-															let areaStyle = {
-																backgroundColor: select.backgroundColor,
-																border: `${select.borderWidth}px solid ${select.borderColor}`,
-																boxSizing: 'border-box',
-																height: `${areaSize.y * 100}%`,
-																left: `${areaPosition.x * 100}%`,
-																position: 'absolute',
-																top: `${areaPosition.y * 100}%`,
-																width: `${areaSize.x * 100}%`,
-															};
-															if (select.shape === 'ellipse') {
-																areaStyle.borderRadius = '100%';
+												}
+												if (select) {
+													if (currentTime - startTime > select.delay) {
+														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+														previousIntersect = currentTime;
+														switch (select.shape) {
+															case 'rectangle': {
+																selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+																break;
 															}
-															return createElement('div', {
-																style: {
-																	bottom: 0,
-																	left: 0,
-																	overflow: 'hidden',
+															case 'ellipse': {
+																selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+																break;
+															}
+														}
+														previousSelectedObjects = [];
+														selectedObjectsIn = selectedObjects;
+														selectedObjectsOut = previousSelectedObjects;
+														select.onSelectStart(startPointerPosition.toArray(), currentPointerPosition.toArray());
+														select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
+														return {
+															render(createElement) {
+																let startPosition = getToElementPercentageRelativePosition(startPointerPosition, domElement);
+																let endPosition = getToElementPercentageRelativePosition(currentPointerPosition, domElement);
+																let areaPosition = startPosition.clone().min(endPosition).clampScalar(0, 1);
+																let areaSize = startPosition.clone().max(endPosition).clampScalar(0, 1).sub(areaPosition);
+																let areaStyle = {
+																	backgroundColor: select.backgroundColor,
+																	border: `${select.borderWidth}px solid ${select.borderColor}`,
+																	boxSizing: 'border-box',
+																	height: `${areaSize.y * 100}%`,
+																	left: `${areaPosition.x * 100}%`,
 																	position: 'absolute',
-																	right: 0,
-																	top: 0,
-																},
-															}, [createElement('div', {style: areaStyle})]);
-														},
-														onMouseMove(event) {
-															currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
-															this.rerender();
-														},
-														onMouseDown: Function_stubNull,
-														onMouseUp: Function_stubNull,
-														onTick() {
-															currentTime = Date.now();
-															if (currentTime - previousIntersect > select.interval) {
-																previousIntersect = currentTime;
-																previousSelectedObjects = selectedObjects;
-																switch (select.shape) {
-																	case 'rectangle': {
-																		selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
-																		break;
+																	top: `${areaPosition.y * 100}%`,
+																	width: `${areaSize.x * 100}%`,
+																};
+																if (select.shape === 'ellipse') {
+																	areaStyle.borderRadius = '100%';
+																}
+																return createElement('div', {
+																	style: {
+																		bottom: 0,
+																		left: 0,
+																		overflow: 'hidden',
+																		position: 'absolute',
+																		right: 0,
+																		top: 0,
+																	},
+																}, [createElement('div', {style: areaStyle})]);
+															},
+															onMouseMove(event) {
+																currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+																this.rerender();
+															},
+															onMouseDown: Function_stubNull,
+															onMouseUp: Function_stubNull,
+															onTick() {
+																currentTime = Date.now();
+																if (currentTime - previousIntersect > select.interval) {
+																	previousIntersect = currentTime;
+																	previousSelectedObjects = selectedObjects;
+																	switch (select.shape) {
+																		case 'rectangle': {
+																			selectedObjects = this.intersectRectangle(startPointerPosition, currentPointerPosition, select.objectFilter);
+																			break;
+																		}
+																		case 'ellipse': {
+																			selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
+																			break;
+																		}
 																	}
-																	case 'ellipse': {
-																		selectedObjects = this.intersectEllipse(startPointerPosition, currentPointerPosition, select.objectFilter);
-																		break;
+																	selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
+																	selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
+																	if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
+																		select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
 																	}
 																}
-																selectedObjectsIn = Array_difference(selectedObjects, previousSelectedObjects);
-																selectedObjectsOut = Array_difference(previousSelectedObjects, selectedObjects);
-																if (selectedObjectsIn.length > 0 || selectedObjectsOut.length > 0) {
-																	select.onSelect(selectedObjects.slice(), selectedObjectsIn.slice(), selectedObjectsOut.slice(), startPointerPosition.toArray(), currentPointerPosition.toArray());
-																}
-															}
-														},
-														onEnd() {
-															select.onSelectEnd(selectedObjects, startPointerPosition.toArray(), currentPointerPosition.toArray());
-														},
-														//controlsEnabled: false,
-													};
-												}
-											}
-											if (press) {
-												if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
-													press = false;
-												}
-											}
-											if (drag) {
-												if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
-													drag = false;
-												}
-											}
-											if (select) {
-												if (currentPointerPosition.distanceTo(startPointerPosition) > select.distanceTolerance) {
-													select = false;
-												}
-											}
-											if (press || drag || select) {
-												// pass
-											} else {
-												return null;
-											}
-										},
-										onMouseUp(event) {
-											if (press) {
-												if (event.which === 1) {
-													if (this.intersectObject(currentPointerPosition, pressedObject)) {
-														press.onPress(pressedObject, currentPointerPosition.toArray());
+															},
+															onEnd() {
+																select.onSelectEnd(selectedObjects, startPointerPosition.toArray(), currentPointerPosition.toArray());
+															},
+															//controlsEnabled: false,
+														};
 													}
 												}
-											}
-											return null;
-										},
-									};
+												if (press) {
+													if (currentPointerPosition.distanceTo(startPointerPosition) > press.distanceTolerance) {
+														press = false;
+													}
+												}
+												if (drag) {
+													if (currentPointerPosition.distanceTo(startPointerPosition) > drag.distanceTolerance) {
+														drag = false;
+													}
+												}
+												if (select) {
+													if (currentPointerPosition.distanceTo(startPointerPosition) > select.distanceTolerance) {
+														select = false;
+													}
+												}
+												if (press || drag || select) {
+													// pass
+												} else {
+													return null;
+												}
+											},
+											onMouseUp(event) {
+												if (press) {
+													if (event.which === 1) {
+														if (this.intersectObject(currentPointerPosition, pressedObject)) {
+															press.onPress(pressedObject, currentPointerPosition.toArray());
+														}
+													}
+												}
+												return null;
+											},
+										};
+									}
 								}
-							}
-						})(press, drag, select);
+							})(press, drag, select);
+						}
 					},
 				};
 			}
