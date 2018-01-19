@@ -32,7 +32,7 @@
 		},
 
 		computed: {
-			interactions() {
+			interactions: function() {
 				return {
 					hover: {
 						objectFilter: this.isThreePoint,
