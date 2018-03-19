@@ -207,7 +207,7 @@
 					var computed = [
 						function() {
 							this.object.material.color.set(this.color);
-						}
+						},
 					];
 					return function() {
 						computed.forEach(function(func) {
@@ -246,7 +246,7 @@
 					var computed = [
 						function() {
 							this.object.material.emissive.set(this.color);
-						}
+						},
 					];
 					return function() {
 						computed.forEach(function(func) {
