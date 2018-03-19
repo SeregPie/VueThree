@@ -1,6 +1,6 @@
-import THREE from 'three';
+import {PerspectiveCamera as THREE_PerspectiveCamera} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
+import Function_noop from 'x/src/Function/noop';
 
 import Object3D from './Object3D';
 
@@ -26,7 +26,7 @@ let VueThreePerspectiveCamera = {
 
 	computed: {
 		object() {
-			return new THREE.PerspectiveCamera();
+			return new THREE_PerspectiveCamera();
 		},
 	},
 
@@ -56,4 +56,4 @@ Object.entries({
 	VueThreePerspectiveCamera.watch[key] = Function_noop;
 });
 
-export default VueThreePerspectiveCamera
+export default VueThreePerspectiveCamera;

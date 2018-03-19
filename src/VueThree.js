@@ -31,7 +31,3 @@ let VueThree = {
 Object.assign(VueThree, components);
 
 export default VueThree;
-
-if (typeof window !== 'undefined' && window.Vue) {
-	window.Vue.use(VueThree);
-}

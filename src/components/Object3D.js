@@ -1,8 +1,8 @@
-import THREE from 'three';
+import {Object3D as THREE_Object3D} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
-import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
-import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
+import Function_noop from 'x/src/Function/noop';
+import THREE_Quaternion_setFrom from 'x.three/src/Quaternion/setFrom';
+import THREE_Vector3_setFrom from 'x.three/src/Vector3/setFrom';
 
 let VueThreeObject = {
 	name: 'VueThreeObject',
@@ -37,7 +37,7 @@ let VueThreeObject = {
 
 	computed: {
 		object() {
-			return new THREE.Object3D();
+			return new THREE_Object3D();
 		},
 
 		renderer() {

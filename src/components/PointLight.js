@@ -1,6 +1,6 @@
-import THREE from 'three';
+import {PointLight as THREE_PointLight} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
+import Function_noop from 'x/src/Function/noop';
 
 import Object3D from './Object3D';
 
@@ -30,7 +30,7 @@ let VueThreePointLight = {
 
 	computed: {
 		object() {
-			return new THREE.PointLight();
+			return new THREE_PointLight();
 		},
 	},
 

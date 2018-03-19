@@ -203,20 +203,18 @@
 					},
 				},
 
-				watch: {},
-
-				beforeCreate: function() {
-					Object.entries({
-						setMaterialColor: function() {
+				created: (function() {
+					var computed = [
+						function() {
 							this.object.material.color.set(this.color);
-						},
-					}).forEach(function(entry) {
-						var key = entry[0];
-						var fn = entry[1];
-						this.$options.computed[key] = fn;
-						this.$options.watch[key] = function() {};
-					}.bind(this));
-				},
+						}
+					];
+					return function() {
+						computed.forEach(function(func) {
+							this.$watch(func);
+						}, this);
+					};
+				})(),
 
 				methods: {
 					dispose: function(object) {
@@ -244,20 +242,18 @@
 					},
 				},
 
-				watch: {},
-
-				beforeCreate: function() {
-					Object.entries({
-						setMaterialEmissive: function() {
+				created: (function() {
+					var computed = [
+						function() {
 							this.object.material.emissive.set(this.color);
-						},
-					}).forEach(function(entry) {
-						var key = entry[0];
-						var fn = entry[1];
-						this.$options.computed[key] = fn;
-						this.$options.watch[key] = function() {};
-					}.bind(this));
-				},
+						}
+					];
+					return function() {
+						computed.forEach(function(func) {
+							this.$watch(func);
+						}, this);
+					};
+				})(),
 
 				methods: {
 					dispose: function(object) {

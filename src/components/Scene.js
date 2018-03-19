@@ -1,11 +1,11 @@
-import THREE from 'three';
+import {Scene as THREE_Scene} from 'three';
 
 export default {
 	name: 'VueThreeScene',
 
 	computed: {
 		object() {
-			return new THREE.Scene();
+			return new THREE_Scene();
 		},
 
 		renderer() {

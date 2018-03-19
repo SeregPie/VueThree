@@ -1,10 +1,15 @@
-import THREE from 'three';
+import {
+	Box2 as THREE_Box2,
+	Plane as THREE_Plane,
+	Raycaster as THREE_Raycaster,
+	Vector2 as THREE_Vector2,
+} from 'three';
 
-import Array_difference from '../helpers/Array/difference';
-import Function_noop from '../helpers/Function/noop';
-import Function_stubFalse from '../helpers/Function/stubFalse';
-import Function_stubNull from '../helpers/Function/stubNull';
-import THREE_Ellipse_containsPoint from '../helpers/THREE/Ellipse/containsPoint';
+import Array_difference from 'x/src/Array/difference';
+import Function_noop from 'x/src/Function/noop';
+import Function_stubFalse from 'x/src/Function/stubFalse';
+import Function_stubNull from 'x/src/Function/stubNull';
+import THREE_Ellipse_containsPoint from 'x.three/src/Ellipse/containsPoint';
 
 import getToElementPercentageRelativePosition from '../members/getToElementPercentageRelativePosition';
 import getRaycastableCoords from '../members/getRaycastableCoords';
@@ -169,11 +174,11 @@ export default {
 					onMouseMove(event) {
 						if (hover) {
 							let startTime = Date.now();
-							let startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+							let startPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 							let currentPointerPosition;
 							return {
 								onMouseMove(event) {
-									currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+									currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 									if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
 										return null;
 									}
@@ -186,7 +191,7 @@ export default {
 										let previousIntersect = 0;
 										return {
 											onMouseMove(event) {
-												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 												if (currentPointerPosition.distanceTo(startPointerPosition) > hover.distanceTolerance) {
 													return null;
 												}
@@ -224,7 +229,7 @@ export default {
 						if (press || drag || select) {
 							return ((press, drag, select) => {
 								if (event.which === 1 && event.target === domElement) {
-									startPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+									startPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 									if (press) {
 										([pressedObject] = this.intersectPoint(startPointerPosition, press.objectFilter));
 										if (!pressedObject) {
@@ -245,15 +250,15 @@ export default {
 										startTime = Date.now();
 										return {
 											onMouseMove(event) {
-												currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+												currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 												currentTime = Date.now();
 												if (drag) {
 													if (currentTime - startTime > drag.delay) {
-														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+														currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 														drag.onDragStart(draggedObject, currentPointerPosition.toArray());
 														return {
 															onMouseMove(event) {
-																currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+																currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 																draggedObjectDragPosition = this.intersectPlane(draggedObjectOriginalPosition, currentPointerPosition);
 																drag.onDrag(draggedObject, draggedObjectDragPosition.toArray(), currentPointerPosition.toArray());
 															},
@@ -268,7 +273,7 @@ export default {
 												}
 												if (select) {
 													if (currentTime - startTime > select.delay) {
-														currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+														currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 														previousIntersect = currentTime;
 														switch (select.shape) {
 															case 'rectangle': {
@@ -316,7 +321,7 @@ export default {
 																}, [createElement('div', {style: areaStyle})]);
 															},
 															onMouseMove(event) {
-																currentPointerPosition = new THREE.Vector2(event.clientX, event.clientY);
+																currentPointerPosition = new THREE_Vector2(event.clientX, event.clientY);
 																this.rerender();
 															},
 															onMouseDown: Function_stubNull,
@@ -497,7 +502,7 @@ export default {
 
 		createRaycaster(pointerPosition) {
 			let position = getRaycastableCoords(pointerPosition, this.renderer.domElement);
-			let raycaster = new THREE.Raycaster();
+			let raycaster = new THREE_Raycaster();
 			raycaster.setFromCamera(position, this.camera);
 			return raycaster;
 		},
@@ -521,7 +526,7 @@ export default {
 
 		intersectPlane(originalThreePosition, pointerPosition) {
 			let raycaster = this.createRaycaster(pointerPosition);
-			let plane = new THREE.Plane();
+			let plane = new THREE_Plane();
 			plane.setFromNormalAndCoplanarPoint(this.camera.getWorldDirection(plane.normal), originalThreePosition);
 			return raycaster.ray.intersectPlane(plane);
 		},
@@ -531,11 +536,11 @@ export default {
 			let endPosition = getRaycastableCoords(endPointerPosition, this.renderer.domElement);
 			let minPosition = startPosition.clone().min(endPosition);
 			let maxPosition = startPosition.clone().max(endPosition);
-			let rectangle = new THREE.Box2(minPosition, maxPosition);
+			let rectangle = new THREE_Box2(minPosition, maxPosition);
 			let objects = this.scene.children.filter(objectFilter);
 			return objects.filter(object => {
 				let position = object.position.clone().project(this.camera);
-				position = new THREE.Vector2(position.x, position.y);
+				position = new THREE_Vector2(position.x, position.y);
 				return rectangle.containsPoint(position);
 			});
 		},
@@ -545,11 +550,11 @@ export default {
 			let endPosition = getRaycastableCoords(endPointerPosition, this.renderer.domElement);
 			let minPosition = startPosition.clone().min(endPosition);
 			let maxPosition = startPosition.clone().max(endPosition);
-			let rectangle = new THREE.Box2(minPosition, maxPosition);
+			let rectangle = new THREE_Box2(minPosition, maxPosition);
 			let objects = this.scene.children.filter(objectFilter);
 			return objects.filter(object => {
 				let position = object.position.clone().project(this.camera);
-				position = new THREE.Vector2(position.x, position.y);
+				position = new THREE_Vector2(position.x, position.y);
 				return THREE_Ellipse_containsPoint(rectangle, position);
 			});
 		},

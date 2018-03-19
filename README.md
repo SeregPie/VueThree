@@ -59,14 +59,6 @@ export default {
 
 If Vue is detected, the components will be registered automatically.
 
----
-
-Include [polyfills](https://polyfill.io/) to support older browsers.
-
-```html
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Object.entries,Object.values"></script>
-```
-
 ## usage
 
 ```html
@@ -99,7 +91,7 @@ Include [polyfills](https://polyfill.io/) to support older browsers.
 
 ---
 
-Create custom THREE components.
+Create custom Vue THREE components.
 
 ```javascript
 let MySphere = {
@@ -116,14 +108,12 @@ let MySphere = {
         new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3}),
       );
     },
-
-    setMaterialEmissive() {
-      this.object.material.emissive.set(this.color);
-    },
   },
 
-  watch: {
-    setMaterialEmissive() {},
+  created() {
+    this.$watch(function() {
+      this.object.material.emissive.set(this.color);
+    });
   },
 
   methods: {

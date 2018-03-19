@@ -1,8 +1,8 @@
-import THREE from 'three';
+import {PerspectiveCamera as THREE_PerspectiveCamera} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
-import THREE_Quaternion_setFrom from '../helpers/THREE/Quaternion/setFrom';
-import THREE_Vector3_setFrom from '../helpers/THREE/Vector3/setFrom';
+import Function_noop from 'x/src/Function/noop';
+import THREE_Quaternion_setFrom from 'x.three/src/Quaternion/setFrom';
+import THREE_Vector3_setFrom from 'x.three/src/Vector3/setFrom';
 
 let VueThreeOrbitControls = {
 	name: 'VueThreeOrbitControls',
@@ -25,7 +25,7 @@ let VueThreeOrbitControls = {
 			default: true,
 		},
 		/*target: {
-			default: new THREE.Vector3(),
+			default: new THREE_Vector3(),
 		},*/
 		minDistance: {
 			type: Number,
@@ -186,7 +186,7 @@ let VueThreeOrbitControls = {
 
 	methods: {
 		createObject() {
-			let object = new THREE.PerspectiveCamera();
+			let object = new THREE_PerspectiveCamera();
 			THREE_Vector3_setFrom(object.position, this.cameraPosition);
 			THREE_Quaternion_setFrom(object.quaternion, this.cameraQuaternion);
 			return object;

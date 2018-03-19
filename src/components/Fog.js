@@ -1,6 +1,6 @@
-import THREE from 'three';
+import {Fog as THREE_Fog} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
+import Function_noop from 'x/src/Function/noop';
 
 let VueThreeFog = {
 	name: 'VueThreeFog',
@@ -22,7 +22,7 @@ let VueThreeFog = {
 
 	computed: {
 		fog() {
-			return new THREE.Fog();
+			return new THREE_Fog();
 		},
 	},
 

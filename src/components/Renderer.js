@@ -1,6 +1,6 @@
-import THREE from 'three';
+import {WebGLRenderer as THREE_WebGLRenderer} from 'three';
 
-import Function_noop from '../helpers/Function/noop';
+import Function_noop from 'x/src/Function/noop';
 
 let VueThreeRenderer = {
 	name: 'VueThreeRenderer',
@@ -10,10 +10,12 @@ let VueThreeRenderer = {
 			type: Boolean,
 			default: true,
 		},
+
 		alpha: {
 			type: Boolean,
 			default: false,
 		},
+
 		clearColor: {
 			type: [String, Number],
 			default: 0x000000,
@@ -41,7 +43,7 @@ let VueThreeRenderer = {
 			containerWidth: 0,
 			containerHeight: 0,
 			frozen$renderer: Object.freeze({
-				o: new THREE.WebGLRenderer({
+				o: new THREE_WebGLRenderer({
 					alpha: this.alpha,
 					antialias: this.antialias,
 					preserveDrawingBuffer: this.preserveDrawingBuffer,
@@ -135,6 +137,7 @@ let VueThreeRenderer = {
 						position: 'relative',
 						width: '100%',
 						height: '100%',
+						overflow: 'hidden',
 					},
 				},
 				[
@@ -143,11 +146,10 @@ let VueThreeRenderer = {
 						{
 							style: {
 								position: 'absolute',
-								left: 0,
-								right: 0,
 								top: 0,
+								right: 0,
 								bottom: 0,
-								overflow: 'hidden',
+								left: 0,
 							},
 							ref: 'container'
 						},

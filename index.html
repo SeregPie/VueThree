@@ -7,19 +7,19 @@
 			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
 		/>
 		<title>VueThree</title>
-		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Array.prototype.@@iterator,Array.prototype.find,Array.prototype.includes,Object.entries,Object.values"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 		<style>
 			[v-cloak] {
 				display: none;
 			}
 		</style>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/91/three.min.js"></script>
 		<script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
 		<script src="VueThree.js"></script>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+			href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
 		/>
 		<link
 			rel="stylesheet"
@@ -27,9 +27,9 @@
 		/>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-beta.4/vuetify.min.css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.8/vuetify.min.css"
 		/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.0-beta.4/vuetify.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.8/vuetify.min.js"></script>
 	</head>
 	<body>
 		<v-app
@@ -49,7 +49,7 @@
 					href="https://github.com/SeregPie/VueThree"
 					target="_blank"
 				>
-					<v-icon>fa-github</v-icon>
+					<v-icon>fab fa-github</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<v-content>
@@ -67,10 +67,10 @@
 							:quaternion="cameraQuaternion"
 						></vue-three-perspective-camera>
 						<component
-							v-for="({component, props}, key) in threeObjects"
+							v-for="(threeObject, key) in threeObjects"
 							:key="key"
-							:is="component"
-							v-bind="props"
+							:is="threeObject.component"
+							v-bind="threeObject.props"
 						></component>
 						<vue-three-point-light
 							:distance="4"
