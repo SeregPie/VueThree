@@ -95,7 +95,7 @@ Create custom Vue THREE components.
 
 ```javascript
 let MySphere = {
-  mixins: [VueThree.Object3D],
+  mixins: [Vue.component('VueThreeObject')],
 
   props: {
     color: {},
@@ -122,8 +122,6 @@ let MySphere = {
       object.material.dispose();
     },
   },
-
-  render: VueThree.Object3D.render,
 },
 ```
 
@@ -144,8 +142,6 @@ let MySphere = {
 | `clearColor` | `[String, Number]` | `0x000000` |
 | `clearAlpha` | `Number` | `1` |
 | `preserveDrawingBuffer` | `Boolean` | `false` |
-| `intervalBetweenRenderScene` | `Number` | `1000 / 60` |
-| `intervalBetweenUpdateContainerSize` | `Number` | `1000` |
 
 ### Object3D
 
@@ -168,6 +164,20 @@ let MySphere = {
 #### name
 
 `vue-three-scene`
+
+### Fog
+
+#### name
+
+`vue-three-fog`
+
+#### properties
+
+| property | type | default |
+| ---: | :--- | :--- |
+| `color` | `[Number, String]` | `0x000000` |
+| `near` | `Number` | `1` |
+| `far` | `Number` | `1000` |
 
 ### PerspectiveCamera
 
@@ -215,7 +225,6 @@ let MySphere = {
 | `autoRotate` | `Boolean` | `false` |
 | `autoRotateSpeed` | `Number` | `2` |
 | `enableKeys` | `Boolean` | `true` |
-| `fintervalBetweenUpdateControlsov` | `Number` | `1000 / 60` |
 
 ### Interactions
 

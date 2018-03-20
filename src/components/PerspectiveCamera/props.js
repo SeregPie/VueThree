@@ -1,20 +1,16 @@
-import {PerspectiveCamera as THREE_PerspectiveCamera} from 'three';
-
-let camera = new THREE_PerspectiveCamera();
-
 export default {
-	color: {
-		type: [Number, String],
-		default: fog.color.getHexString(),
+	fov: {
+		type: Number,
+		default: 50,
 	},
 
 	near: {
 		type: Number,
-		default: fog.near,
+		default: 1/10,
 	},
 
 	far: {
 		type: Number,
-		default: fog.far,
+		default: 2000,
 	},
 };

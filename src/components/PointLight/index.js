@@ -5,17 +5,13 @@ import VueThee_Object from '../Object3D';
 import props from './props';
 import computed from './computed';
 import watchComputed from './watchComputed';
-import created from './created';
-import beforeDestroy from './beforeDestroy';
 
 export default {
-	name: 'VueThreePerspectiveCamera',
+	name: 'VueThreePointLight',
 	mixins: [
 		VueThee_Object,
 		VueWatchComputed(watchComputed),
 	],
 	props,
 	computed,
-	created,
-	beforeDestroy,
 };

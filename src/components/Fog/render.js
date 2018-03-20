@@ -1,3 +1,3 @@
-export default function(h) {
-	return h('div');
+export default function(createElement) {
+	return createElement('div');
 }

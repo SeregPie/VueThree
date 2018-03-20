@@ -1,13 +1,13 @@
 export default [
 	function() {
-		this.fog.color.set(this.color);
+		this.object.fov = this.fov;
 	},
 
 	function() {
-		this.fog.near = this.near;
+		this.object.near = this.near;
 	},
 
 	function() {
-		this.fog.far = this.far;
+		this.object.far = this.far;
 	},
 ];

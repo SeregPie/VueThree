@@ -1,3 +1,3 @@
-export default function(h) {
-	return h('div', this.$slots.default);
+export default function(createElement) {
+	return createElement('div', this.$slots.default);
 }

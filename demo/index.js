@@ -183,7 +183,7 @@
 
 		components: {
 			mySphereHelper: {
-				mixins: [VueThree.Object3D],
+				mixins: [Vue.component('VueThreeObject')],
 
 				props: {
 					color: {},
@@ -222,12 +222,10 @@
 						object.material.dispose();
 					},
 				},
-
-				render: VueThree.Object3D.render,
 			},
 
 			myPoint: {
-				mixins: [VueThree.Object3D],
+				mixins: [Vue.component('VueThreeObject')],
 
 				props: {
 					color: {},
@@ -261,8 +259,6 @@
 						object.material.dispose();
 					},
 				},
-
-				render: VueThree.Object3D.render,
 			},
 		},
 	});

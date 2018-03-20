@@ -1,31 +1,31 @@
-import {Object3D as THREE_Object3D} from 'three';
-import Function_partial from 'x/src/Function/partial';
-import Lang_clone from 'x/src/Lang/clone';
-
-let object = new THREE_Object3D();
-
 export default {
 	position: {
 		type: [Object, Array],
-		default: Function_partial(Lang_clone, object.position.toArray()),
+		default() {
+			return [0, 0, 0];
+		},
 	},
 
 	quaternion: {
 		type: [Object, Array],
-		default: Function_partial(Lang_clone, object.quaternion.toArray()),
+		default() {
+			return [0, 0, 0, 1];
+		},
 	},
 
 	scale: {
 		type: [Object, Array, Number],
-		default: Function_partial(Lang_clone, object.scale.toArray()),
+		default: 1,
 	},
 
 	name: {
 		type: String,
-		default: Function_partial(Lang_clone, object.name),
+		default: '',
 	},
 
 	userData: {
-		default: Function_partial(Lang_clone, object.userData),
+		default() {
+			return {};
+		},
 	},
 };

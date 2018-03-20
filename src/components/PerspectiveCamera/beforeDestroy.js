@@ -1,3 +1,3 @@
 export default function() {
-	this.$parent.object.fog = null;
+	this.$parent.$parent.camera = null;
 }

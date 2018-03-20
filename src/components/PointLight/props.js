@@ -1,16 +1,21 @@
 export default {
 	color: {
 		type: [Number, String],
-		default: 0x000000,
+		default: 0xffffff,
 	},
 
-	near: {
+	intensity: {
 		type: Number,
 		default: 1,
 	},
 
-	far: {
+	distance: {
 		type: Number,
-		default: 1000,
+		default: 0,
+	},
+
+	decay: {
+		type: Number,
+		default: 1,
 	},
 };
