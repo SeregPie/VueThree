@@ -3,14 +3,14 @@ export default [
 		let {
 			renderer,
 			camera,
-			elementWidth,
-			elementHeight,
+			elWidth,
+			elHeight,
 		} = this;
 
-		renderer.setSize(elementWidth, elementHeight);
-		if (elementWidth > 0 && elementHeight > 0) {
+		renderer.setSize(elWidth, elHeight);
+		if (elWidth > 0 && elHeight > 0) {
 			if (camera) {
-				camera.aspect = elementWidth / elementHeight;
+				camera.aspect = elWidth / elHeight;
 				camera.updateProjectionMatrix();
 			}
 		}

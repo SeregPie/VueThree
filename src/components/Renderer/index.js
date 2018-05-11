@@ -1,4 +1,4 @@
-import VueAnimated from 'x.vue/src/mixins/Animated';
+import VueScheduled from 'x.vue/src/mixins/Scheduled';
 import VueFrozenData from 'x.vue/src/mixins/FrozenData';
 import VueWatchComputed from 'x.vue/src/mixins/WatchComputed';
 
@@ -8,7 +8,7 @@ import frozenData from './frozenData';
 import computed from './computed';
 import watchComputed from './watchComputed';
 import mounted from './mounted';
-import animated from './animated';
+import scheduled from './scheduled';
 import render from './render';
 
 export default {
@@ -16,7 +16,7 @@ export default {
 	mixins: [
 		VueFrozenData(frozenData),
 		VueWatchComputed(watchComputed),
-		VueAnimated(animated),
+		VueScheduled(scheduled),
 	],
 	props,
 	data,

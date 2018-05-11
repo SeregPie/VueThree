@@ -1,10 +1,10 @@
 export default [
 	{
 		method() {
-			this.elementWidth = this.$el.offsetWidth;
-			this.elementHeight = this.$el.offsetHeight;
+			this.elWidth = this.$el.offsetWidth;
+			this.elHeight = this.$el.offsetHeight;
 		},
-		interval: 1000,
+		delay: 1000,
 	},
 	{
 		method() {
@@ -18,6 +18,6 @@ export default [
 				renderer.render(scene, camera);
 			}
 		},
-		interval: 1000 / 60,
+		delay: 1000 / 60,
 	},
 ];

@@ -68,8 +68,8 @@ export default {
 			return this.$parent.scene;
 		},
 
-		populatedHover() {
-			let hover = this.hover;
+		normalizedHover() {
+			let {hover} = this;
 
 			if (hover) {
 				return Object.assign({
@@ -83,8 +83,8 @@ export default {
 			}
 		},
 
-		populatedPress() {
-			let press = this.press;
+		normalizedPress() {
+			let {press} = this;
 
 			if (press) {
 				return Object.assign({
@@ -96,8 +96,8 @@ export default {
 			}
 		},
 
-		populatedDrag() {
-			let drag = this.drag;
+		normalizedDrag() {
+			let {drag} = this;
 
 			if (drag) {
 				return Object.assign({
@@ -111,8 +111,8 @@ export default {
 			}
 		},
 
-		populatedSelect() {
-			let select = this.select;
+		normalizedSelect() {
+			let {select} = this;
 
 			if (select) {
 				return Object.assign({
@@ -150,10 +150,10 @@ export default {
 
 		initialStrategy() {
 			let domElement = this.renderer.domElement;
-			let hover = this.populatedHover;
-			let press = this.populatedPress;
-			let drag = this.populatedDrag;
-			let select = this.populatedSelect;
+			let hover = this.normalizedHover;
+			let press = this.normalizedPress;
+			let drag = this.normalizedDrag;
+			let select = this.normalizedSelect;
 
 			if (hover || press || drag || select) {
 				let startPointerPosition;

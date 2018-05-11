@@ -13,20 +13,27 @@
 			lightPosition: [1, 1, 1],
 			cameraPosition: defaultCameraPosition,
 			cameraQuaternion: defaultCameraQuaternion,
+			tweenedCameraPosition: defaultCameraPosition,
+			tweenedCameraQuaternion: defaultCameraQuaternion,
 			controlsEnabled: true,
 			points: (function() {
-				var returns = [];
+				var points = [];
 				for (var i = 0; i < 100; ++i) {
 					var point = {
-						position: (new THREE.Vector3(Math.random(), Math.random(), Math.random()))
+						position: (new THREE.Vector3())
+							.setX(Math.random())
+							.setY(Math.random())
+							.setZ(Math.random())
 							.subScalar(1/2)
-							.setLength(Math.random())
+							.setLength(1/6 + Math.random() * 5/6)
 							.toArray(),
-						scale: 1/100 + Math.random() * 3/100,
+						scale: (new THREE.Vector3())
+							.setScalar(1/100 + Math.random() * 1/25)
+							.toArray(),
 					};
-					returns.push(point);
+					points.push(point);
 				}
-				return returns;
+				return points;
 			})(),
 			selectedPoints: {},
 		},
@@ -109,9 +116,19 @@
 				Object.entries(threePoints).forEach(function(entry) {
 					var key = entry[0];
 					var object = entry[1];
-					returns['point'+'.'+key] = object;
+					returns[JSON.stringify(['point', key])] = object;
 				});
 				return returns;
+			},
+		},
+
+		watch: {
+			cameraPosition: function(value) {
+
+			},
+
+			cameraQuaternion: function(value) {
+
 			},
 		},
 
@@ -183,7 +200,7 @@
 
 		components: {
 			mySphereHelper: {
-				mixins: [Vue.component('VueThreeObject')],
+				mixins: [VueThree.Object],
 
 				props: {
 					color: {},
@@ -204,13 +221,13 @@
 				},
 
 				created: (function() {
-					var computed = [
+					var watchComputed = [
 						function() {
 							this.object.material.color.set(this.color);
 						},
 					];
 					return function() {
-						computed.forEach(function(func) {
+						watchComputed.forEach(function(func) {
 							this.$watch(func);
 						}, this);
 					};
@@ -225,7 +242,7 @@
 			},
 
 			myPoint: {
-				mixins: [Vue.component('VueThreeObject')],
+				mixins: [VueThree.Object],
 
 				props: {
 					color: {},
@@ -235,19 +252,22 @@
 					object: function() {
 						return new THREE.Mesh(
 							new THREE.SphereBufferGeometry(1/2, 24, 24),
-							new THREE.MeshStandardMaterial({metalness: 2/3, roughness: 2/3})
+							new THREE.MeshStandardMaterial({
+								metalness: 2/3,
+								roughness: 2/3,
+							})
 						);
 					},
 				},
 
 				created: (function() {
-					var computed = [
+					var watchComputed = [
 						function() {
 							this.object.material.emissive.set(this.color);
 						},
 					];
 					return function() {
-						computed.forEach(function(func) {
+						watchComputed.forEach(function(func) {
 							this.$watch(func);
 						}, this);
 					};

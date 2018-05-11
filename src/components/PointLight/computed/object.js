@@ -1,5 +1,5 @@
-import {PointLight as THREE_PointLight} from 'three';
+import {PointLight} from 'three';
 
 export default function() {
-	return new THREE_PointLight();
+	return new PointLight();
 }

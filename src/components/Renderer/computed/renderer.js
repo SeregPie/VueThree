@@ -1,4 +1,4 @@
-import {WebGLRenderer as THREE_WebGLRenderer} from 'three';
+import {WebGLRenderer} from 'three';
 
 export default function() {
 	let {
@@ -7,7 +7,7 @@ export default function() {
 		preserveDrawingBuffer,
 	} = this;
 
-	return new THREE_WebGLRenderer({
+	return new WebGLRenderer({
 		alpha,
 		antialias,
 		preserveDrawingBuffer,

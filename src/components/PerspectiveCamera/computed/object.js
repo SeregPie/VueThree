@@ -1,5 +1,5 @@
-import {PerspectiveCamera as THREE_PerspectiveCamera} from 'three';
+import {PerspectiveCamera} from 'three';
 
 export default function() {
-	return new THREE_PerspectiveCamera();
+	return new PerspectiveCamera();
 }
