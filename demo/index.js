@@ -13,8 +13,6 @@
 			lightPosition: [1, 1, 1],
 			cameraPosition: defaultCameraPosition,
 			cameraQuaternion: defaultCameraQuaternion,
-			tweenedCameraPosition: defaultCameraPosition,
-			tweenedCameraQuaternion: defaultCameraQuaternion,
 			controlsEnabled: true,
 			points: (function() {
 				var points = [];
@@ -119,16 +117,6 @@
 					returns[JSON.stringify(['point', key])] = object;
 				});
 				return returns;
-			},
-		},
-
-		watch: {
-			cameraPosition: function(value) {
-
-			},
-
-			cameraQuaternion: function(value) {
-
 			},
 		},
 

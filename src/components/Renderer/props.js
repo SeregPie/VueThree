@@ -10,7 +10,7 @@ export default {
 	},
 
 	clearColor: {
-		type: [String, Number],
+		type: [Number, String],
 		default: 0x000000,
 	},
 

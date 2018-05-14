@@ -14,12 +14,12 @@
 				display: none;
 			}
 		</style>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/91/three.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script>
 		<script src="https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js"></script>
 		<script src="VueThree.js"></script>
 		<link
 			rel="stylesheet"
-			href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+			href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
 		/>
 		<link
 			rel="stylesheet"
@@ -27,9 +27,9 @@
 		/>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.8/vuetify.min.css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-alpha.3/vuetify.min.css"
 		/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.0.8/vuetify.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-alpha.3/vuetify.min.js"></script>
 	</head>
 	<body>
 		<v-app
@@ -42,14 +42,18 @@
 				clipped-left
 				app
 			>
-				<v-toolbar-title>VueThree</v-toolbar-title>
+				<v-toolbar-title>
+					VueThree
+				</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn
 					icon
 					href="https://github.com/SeregPie/VueThree"
 					target="_blank"
 				>
-					<v-icon>fab fa-github</v-icon>
+					<v-icon>
+						fab fa-github
+					</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<v-content>
@@ -89,28 +93,27 @@
 						:camera-position.sync="cameraPosition"
 						:camera-quaternion.sync="cameraQuaternion"
 						:max-distance="4"
-						:enable-damping="true"
-						:damping-factor="1/12"
-						:rotate-speed="1/6"
-						:zoom-speed="1"
-						:key-pan-speed="1/2"
-						:enable-keys="false"
 					></vue-three-orbit-controls>
 				</vue-three-renderer>
 				<v-tooltip left>
 					<v-btn
 						slot="activator"
+						class="ma-0"
 						fixed
 						bottom
 						right
-						fab
 						color="amber"
+						fab
 						dark
 						@click="resetCamera"
 					>
-						<v-icon>explore</v-icon>
+						<v-icon>
+							explore
+						</v-icon>
 					</v-btn>
-					<span>reset camera</span>
+					<span>
+						reset camera
+					</span>
 				</v-tooltip>
 			</v-content>
 		</v-app>
