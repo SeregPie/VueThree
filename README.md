@@ -140,7 +140,7 @@ let MySphere = {
 | ---: | :--- | :--- |
 | `position` | `[Array, Object]` | `[0, 0, 0]` |
 | `quaternion` | `[Array, Object]` | `[0, 0, 0, 1]` |
-| `scale` | `[Number, Array, Object]` | `[1, 1, 1]` |
+| `scale` | `[Number, Array, Object]` | `1` |
 | `name` | `String` | `''` |
 | `userData` | `userData` | `{}` |
 
