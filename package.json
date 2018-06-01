@@ -1,6 +1,6 @@
 {
 	"name": "vuethree",
-	"version": "18.1.17",
+	"version": "18.6.1",
 	"description": "A Vue wrapper for THREE.",
 	"main": "VueThree.js",
 	"scripts": {
