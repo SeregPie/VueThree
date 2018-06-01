@@ -1,6 +1,5 @@
-import VueScheduled from 'x.vue/src/mixins/Scheduled';
-import VueFrozenData from 'x.vue/src/mixins/FrozenData';
-import VueWatchComputed from 'x.vue/src/mixins/WatchComputed';
+import VueFrozenData from '/utils/Vue/FrozenData';
+import VueWatchComputed from '/utils/Vue/WatchComputed';
 
 import props from './props';
 import data from './data';
@@ -8,7 +7,7 @@ import frozenData from './frozenData';
 import computed from './computed';
 import watchComputed from './watchComputed';
 import mounted from './mounted';
-import scheduled from './scheduled';
+import methods from './methods';
 import render from './render';
 
 export default {
@@ -16,11 +15,11 @@ export default {
 	mixins: [
 		VueFrozenData(frozenData),
 		VueWatchComputed(watchComputed),
-		VueScheduled(scheduled),
 	],
 	props,
 	data,
 	computed,
 	mounted,
+	methods,
 	render,
 };

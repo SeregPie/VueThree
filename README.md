@@ -1,7 +1,5 @@
 # VueThree
 
-*in the early development stage*
-
 A Vue wrapper for THREE.
 
 ## demo
@@ -124,10 +122,6 @@ let MySphere = {
 
 ### Renderer
 
-#### name
-
-`vue-three-renderer`
-
 #### properties
 
 | property | type | default |
@@ -140,10 +134,6 @@ let MySphere = {
 
 ### Object
 
-#### name
-
-`vue-three-object`
-
 #### properties
 
 | property | type | default |
@@ -155,10 +145,6 @@ let MySphere = {
 | `userData` | `userData` | `{}` |
 
 ### Scene
-
-#### name
-
-`vue-three-scene`
 
 ### Fog
 
@@ -176,10 +162,6 @@ let MySphere = {
 
 ### PerspectiveCamera
 
-#### name
-
-`vue-three-perspective-camera`
-
 #### properties
 
 | property | type | default |
@@ -189,10 +171,6 @@ let MySphere = {
 | `far` | `Number` | `2000` |
 
 ### PointLight
-
-#### name
-
-`vue-three-point-light`
 
 #### properties
 

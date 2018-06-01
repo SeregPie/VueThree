@@ -1,8 +1,9 @@
 import buble from 'rollup-plugin-buble';
-import nodeResolve from 'rollup-plugin-node-resolve';
-import uglify from 'rollup-plugin-uglify';
+import path from 'path';
+import resolve from '@seregpie/rollup-plugin-resolve';
+import {uglify} from 'rollup-plugin-uglify';
 
-import pkg from './package.json';
+import {main} from './package.json';
 
 let globals = {
 	'three': 'THREE',
@@ -12,16 +13,14 @@ export default {
 	input: 'src/index.js',
 	external: Object.keys(globals),
 	output: {
-		file: pkg.main,
+		file: main,
 		format: 'umd',
-		name: 'VueThree',
+		name: path.basename(main, path.extname(main)),
 		globals,
 	},
 	plugins: [
-		nodeResolve(),
-		buble({
-			objectAssign: 'Object.assign',
-		}),
+		resolve(),
+		buble({objectAssign: 'Object.assign'}),
 		uglify(),
 	],
 };

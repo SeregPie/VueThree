@@ -1,4 +1,4 @@
-import VueWatchComputed from 'x.vue/src/mixins/WatchComputed';
+import VueWatchComputed from '/utils/Vue/WatchComputed';
 
 import VueThreeObject from '../Object';
 

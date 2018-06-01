@@ -1,3 +1,3 @@
-import Function_noop from 'x/src/Function/noop';
+import Function_noop from '/utils/Function/noop';
 
 export default Function_noop;

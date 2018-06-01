@@ -1,6 +1,6 @@
 export default function() {
 	return {
-		elWidth: 0,
-		elHeight: 0,
+		elementWidth: 0,
+		elementHeight: 0,
 	};
 }
