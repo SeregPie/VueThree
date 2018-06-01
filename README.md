@@ -138,9 +138,9 @@ let MySphere = {
 
 | property | type | default |
 | ---: | :--- | :--- |
-| `position` | `Array` | `[0, 0, 0]` |
-| `quaternion` | `Array` | `[0, 0, 0, 1]` |
-| `scale` | `Array` | `[1, 1, 1]` |
+| `position` | `[Array, Object]` | `[0, 0, 0]` |
+| `quaternion` | `[Array, Object]` | `[0, 0, 0, 1]` |
+| `scale` | `[Number, Array, Object]` | `[1, 1, 1]` |
 | `name` | `String` | `''` |
 | `userData` | `userData` | `{}` |
 

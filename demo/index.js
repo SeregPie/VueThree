@@ -25,9 +25,7 @@
 							.subScalar(1/2)
 							.setLength(1/6 + Math.random() * 5/6)
 							.toArray(),
-						scale: (new THREE.Vector3())
-							.setScalar(1/100 + Math.random() * 1/25)
-							.toArray(),
+						scale: 1/100 + Math.random() * 1/25,
 					};
 					points.push(point);
 				}

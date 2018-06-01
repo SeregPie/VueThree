@@ -1,21 +1,23 @@
+import Function_stubObject from '/utils/Function/stubObject';
+
 export default {
 	position: {
-		type: Array,
+		type: [Array, Object],
 		default() {
 			return [0, 0, 0];
 		},
 	},
 
 	quaternion: {
-		type: Array,
+		type: [Array, Object],
 		default() {
 			return [0, 0, 0, 1];
 		},
 	},
 
 	scale: {
-		type: Array,
-		default: [1, 1, 1],
+		type: [Number, Array, Object],
+		default: 1,
 	},
 
 	name: {
@@ -24,8 +26,6 @@ export default {
 	},
 
 	userData: {
-		default() {
-			return {};
-		},
+		default: Function_stubObject,
 	},
 };

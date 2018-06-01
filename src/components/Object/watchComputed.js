@@ -1,14 +1,17 @@
+import THREE_Quaternion_setFrom from '/utils/THREE/Quaternion/setFrom';
+import THREE_Vector3_setFrom from '/utils/THREE/Vector3/setFrom';
+
 export default [
 	function() {
-		this.object.position.fromArray(this.position);
+		THREE_Vector3_setFrom(this.object.position, this.position);
 	},
 
 	function() {
-		this.object.quaternion.fromArray(this.quaternion);
+		THREE_Quaternion_setFrom(this.object.quaternion, this.quaternion);
 	},
 
 	function() {
-		this.object.scale.fromArray(this.scale);
+		THREE_Vector3_setFrom(this.object.scale, this.scale);
 	},
 
 	function() {
