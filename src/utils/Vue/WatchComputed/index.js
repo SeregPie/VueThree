@@ -4,6 +4,6 @@ export default function(watchComputed) {
 			watchComputed.forEach(func => {
 				this.$watch(func);
 			});
-		}
+		},
 	};
 }

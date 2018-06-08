@@ -1,26 +1,25 @@
-const prefix = 'frozenData_';
+let prefix = 'frozenData_';
 
 export default function(frozenData) {
-	let options = {
+	return {
 		data() {
-			let returns = {};
+			let data = {};
+			let computed = {};
 			Object.entries(frozenData).forEach(([key, value]) => {
-				returns[prefix + key] = Object.freeze([value]);
+				data[prefix + key] = {};
+				computed[key] = {
+					get() {
+						this[prefix + key];
+						return value;
+					},
+					set(newValue) {
+						value = newValue;
+						this[prefix + key] = {};
+					},
+				};
 			});
-			return returns;
+			Object.assign(this.$options.computed, computed);
+			return data;
 		},
-		computed: {},
 	};
-	Object.keys(frozenData).forEach(key => {
-		options.computed[key] = {
-			get() {
-				return this[prefix + key][0];
-			},
-
-			set(value) {
-				return this[prefix + key] = Object.freeze([value]);
-			},
-		};
-	});
-	return options;
 }

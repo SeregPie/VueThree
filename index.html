@@ -26,9 +26,9 @@
 		/>
 		<link
 			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-beta.1/vuetify.min.css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-beta.2/vuetify.min.css"
 		/>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-beta.1/vuetify.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.1.0-beta.2/vuetify.min.js"></script>
 	</head>
 	<body>
 		<v-app
@@ -81,18 +81,6 @@
 							:position="lightPosition"
 						></vue-three-point-light>
 					</vue-three-scene>
-					<vue-three-interactions
-						:hover="interactions.hover"
-						:press="interactions.press"
-						:drag="interactions.drag"
-						:select="interactions.select"
-					></vue-three-interactions>
-					<vue-three-orbit-controls
-						v-if="controlsEnabled"
-						:camera-position.sync="cameraPosition"
-						:camera-quaternion.sync="cameraQuaternion"
-						:max-distance="4"
-					></vue-three-orbit-controls>
 				</vue-three-renderer>
 				<v-tooltip left>
 					<v-btn

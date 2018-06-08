@@ -148,10 +148,6 @@ let MySphere = {
 
 ### Fog
 
-#### name
-
-`vue-three-fog`
-
 #### properties
 
 | property | type | default |

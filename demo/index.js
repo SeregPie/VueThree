@@ -13,7 +13,6 @@
 			lightPosition: [1, 1, 1],
 			cameraPosition: defaultCameraPosition,
 			cameraQuaternion: defaultCameraQuaternion,
-			controlsEnabled: true,
 			points: (function() {
 				var points = [];
 				for (var i = 0; i < 100; ++i) {
@@ -31,37 +30,9 @@
 				}
 				return points;
 			})(),
-			selectedPoints: {},
 		},
 
 		computed: {
-			interactions: function() {
-				return {
-					hover: {
-						objectFilter: this.isThreePoint,
-						onHoverIn: this.onThreePointHoverIn,
-						onHoverOut: this.onThreePointHoverOut
-					},
-					press: {
-						objectFilter: this.isThreePoint,
-						onPress: this.onThreePointPress,
-					},
-					drag: {
-						objectFilter: this.isThreePoint,
-						onDragStart: this.onThreePointDragStart,
-						onDrag: this.onThreePointDrag,
-						onDragEnd: this.onThreePointDragEnd,
-					},
-					select: {
-						shape: 'ellipse',
-						objectFilter: this.isThreePoint,
-						onSelectStart: this.onThreePointsSelectStart,
-						onSelect: this.onThreePointsSelect,
-						onSelectEnd: this.onThreePointsSelectEnd,
-					},
-				};
-			},
-
 			threeSphereHelper: function() {
 				var primaryColor = this.primaryColor;
 
@@ -75,19 +46,16 @@
 
 			threePoints: function() {
 				var points = this.points;
-				var selectedPoints = this.selectedPoints;
 				var primaryColor = this.primaryColor;
 				var secondaryColor = this.secondaryColor;
 
 				var returns = {};
 				points.forEach(function(point, pointIndex) {
 					var threePointKey = ''+pointIndex;
-					var pointSelected = !!selectedPoints[pointIndex];
-					var threePointColor = pointSelected ? secondaryColor : primaryColor;
 					var threePoint = {
 						component: 'myPoint',
 						props: {
-							color: threePointColor,
+							color: primaryColor,
 							position: point.position,
 							scale: point.scale,
 							userData: {
@@ -122,65 +90,6 @@
 			resetCamera: function() {
 				this.cameraPosition = defaultCameraPosition;
 				this.cameraQuaternion = defaultCameraQuaternion;
-			},
-
-			isThreePoint: function(object) {
-				return object.userData.type === 'point';
-			},
-
-			onThreePointPress: function(object) {
-				var pointIndex = object.userData.index;
-				this.points.splice(pointIndex, 1);
-			},
-
-			onThreePointDragStart: function(object) {
-				this.controlsEnabled = false;
-				var pointIndex = object.userData.index;
-				Vue.set(this.selectedPoints, pointIndex, true);
-			},
-
-			onThreePointDrag: function(object, position) {
-				var pointIndex = object.userData.index;
-				this.points[pointIndex].position = position;
-			},
-
-			onThreePointDragEnd: function(object) {
-				this.controlsEnabled = true;
-				var pointIndex = object.userData.index;
-				Vue.delete(this.selectedPoints, pointIndex);
-			},
-
-			onThreePointHoverIn: function(object) {
-				var pointIndex = object.userData.index;
-				Vue.set(this.selectedPoints, pointIndex, true);
-			},
-
-			onThreePointHoverOut: function(object) {
-				var pointIndex = object.userData.index;
-				Vue.delete(this.selectedPoints, pointIndex);
-			},
-
-			onThreePointsSelectStart: function() {
-				this.controlsEnabled = false;
-			},
-
-			onThreePointsSelect: function(objects, objectsIn, objectsOut) {
-				objectsIn.forEach(function(object) {
-					var pointIndex = object.userData.index;
-					Vue.set(this.selectedPoints, pointIndex, true);
-				}.bind(this));
-				objectsOut.forEach(function(object) {
-					var pointIndex = object.userData.index;
-					Vue.delete(this.selectedPoints, pointIndex);
-				}.bind(this));
-			},
-
-			onThreePointsSelectEnd: function(objects) {
-				objects.forEach(function(object) {
-					var pointIndex = object.userData.index;
-					Vue.delete(this.selectedPoints, pointIndex);
-				}.bind(this));
-				this.controlsEnabled = true;
 			},
 		},
 
