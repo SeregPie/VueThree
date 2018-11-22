@@ -1,6 +1,6 @@
 # VueThree
 
-A Vue wrapper for THREE.
+A wrapper for THREE.
 
 ## demo
 
@@ -31,18 +31,18 @@ Vue.use(VueThree);
 
 *or*
 
-Register the components in the scope of another instance.
+Register the components in the scope of another component.
 
 ```javascript
 import VueThree from 'vuethree';
 
 export default {
-  // ...
   components: {
     [VueThree.Renderer.name]: VueThree.Renderer,
     [VueThree.Object.name]: VueThree.Object,
     [VueThree.Scene.name]: VueThree.Scene,
   },
+  /*...*/
 };
 ```
 
@@ -68,9 +68,9 @@ If Vue is detected, the components will be registered automatically.
       :quaternion="cameraQuaternion"
     />
     <component
-      v-for="threeObject in threeObjects"
-      :key="threeObject.key"
       :is="threeObject.component"
+      v-for="threeObject in threeObjects"
+      :key="threeObject.key"      
       v-bind="threeObject.props"
     />
     <vue-three-point-light
@@ -125,11 +125,11 @@ let MySphere = {
 
 | property | type | default |
 | ---: | :--- | :--- |
-| `antialias` | `Boolean` | `true` |
 | `alpha` | `Boolean` | `false` |
-| `clearColor` | `[Number, String]` | `0x000000` |
-| `clearAlpha` | `Number` | `1` |
-| `preserveDrawingBuffer` | `Boolean` | `false` |
+| `antialias` | `Boolean` | `true` |
+| `clear-alpha` | `Number` | `1` |
+| `clear-color` | `[Number, String]` | `0x000000` |
+| `preserve-drawing-buffer` | `Boolean` | `false` |
 
 ### Object
 
@@ -137,11 +137,11 @@ let MySphere = {
 
 | property | type | default |
 | ---: | :--- | :--- |
+| `name` | `String` | `''` |
 | `position` | `[Array, Object]` | `[0, 0, 0]` |
 | `quaternion` | `[Array, Object]` | `[0, 0, 0, 1]` |
 | `scale` | `[Number, Array, Object]` | `1` |
-| `name` | `String` | `''` |
-| `userData` | `userData` | `{}` |
+| `user-data` | `userData` | `{}` |
 
 ### Scene
 
@@ -152,8 +152,8 @@ let MySphere = {
 | property | type | default |
 | ---: | :--- | :--- |
 | `color` | `[Number, String]` | `0x000000` |
-| `near` | `Number` | `1` |
 | `far` | `Number` | `1000` |
+| `near` | `Number` | `1` |
 
 ### PerspectiveCamera
 
@@ -161,9 +161,9 @@ let MySphere = {
 
 | property | type | default |
 | ---: | :--- | :--- |
+| `far` | `Number` | `2000` |
 | `fov` | `Number` | `50` |
 | `near` | `Number` | `1/10` |
-| `far` | `Number` | `2000` |
 
 ### PointLight
 
@@ -172,6 +172,6 @@ let MySphere = {
 | property | type | default |
 | ---: | :--- | :--- |
 | `color` | `[Number, String]` | `0xffffff` |
-| `intensity` | `Number` | `1` |
-| `distance` | `Number` | `0` |
 | `decay` | `Number` | `1` |
+| `distance` | `Number` | `0` |
+| `intensity` | `Number` | `1` |
