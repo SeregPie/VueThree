@@ -8,7 +8,6 @@ A Vue wrapper for THREE.
 
 ## dependencies
 
-- [Vue](https://github.com/vuejs/vue)
 - [THREE](https://github.com/mrdoob/three.js)
 
 ## setup
