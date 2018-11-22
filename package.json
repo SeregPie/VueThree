@@ -2,19 +2,19 @@
 	"name": "vuethree",
 	"version": "18.6.1",
 	"description": "A Vue wrapper for THREE.",
+	"keywords": [
+		"THREE",
+		"Vue"
+	],
+	"license": "MIT",
+	"author": "Sergej Sintschilin <seregpie@gmail.com>",
 	"main": "VueThree.js",
+	"repository": "https://github.com/SeregPie/VueThree.git",
 	"scripts": {
 		"build": "rollup -c",
 		"dev": "rollup -c -w",
 		"prepublishOnly": "npm run build"
 	},
-	"repository": "https://github.com/SeregPie/VueThree.git",
-	"keywords": [
-		"THREE",
-		"Vue"
-	],
-	"author": "Sergej Sintschilin <seregpie@gmail.com>",
-	"license": "MIT",
 	"dependencies": {
 		"three": "^0.98.0",
 		"vue": "^2.5.17"
