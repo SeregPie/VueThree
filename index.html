@@ -33,26 +33,23 @@
 	<body>
 		<v-app
 			v-cloak
-			id="App"
+			id="app"
 		>
 			<v-toolbar
-				color="amber darken-3"
-				dark
-				clipped-left
 				app
+				clipped-left
+				color="primary"
+				dark
+				dense
 			>
-				<v-toolbar-title>
-					VueThree
-				</v-toolbar-title>
+				<v-toolbar-title>VueThree</v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn
-					icon
 					href="https://github.com/SeregPie/VueThree"
+					icon
 					target="_blank"
 				>
-					<v-icon>
-						fab fa-github
-					</v-icon>
+					<v-icon>fab fa-github</v-icon>
 				</v-btn>
 			</v-toolbar>
 			<v-content>
@@ -60,24 +57,24 @@
 					<vue-three-scene>
 						<vue-three-fog
 							:color="backgroundColor"
-							:near="1/24"
 							:far="4"
+							:near="1/24"
 						></vue-three-fog>
 						<vue-three-perspective-camera
-							:near="1/64"
 							:far="4"
+							:near="1/64"
 							:position="cameraPosition"
 							:quaternion="cameraQuaternion"
 						></vue-three-perspective-camera>
 						<component
+							:is="threeObject.component"
 							v-for="(threeObject, key) in threeObjects"
 							:key="key"
-							:is="threeObject.component"
 							v-bind="threeObject.props"
 						></component>
 						<vue-three-point-light
-							:distance="4"
 							:decay="2"
+							:distance="4"
 							:position="lightPosition"
 						></vue-three-point-light>
 					</vue-three-scene>
@@ -85,22 +82,18 @@
 				<v-tooltip left>
 					<v-btn
 						slot="activator"
-						class="ma-0"
-						fixed
 						bottom
-						right
-						color="amber"
+						class="ma-0"
+						color="accent"
 						dark
 						fab
+						fixed
+						right
 						@click="resetCamera"
 					>
-						<v-icon>
-							explore
-						</v-icon>
+						<v-icon>explore</v-icon>
 					</v-btn>
-					<span>
-						reset camera
-					</span>
+					<span>reset camera</span>
 				</v-tooltip>
 			</v-content>
 		</v-app>
